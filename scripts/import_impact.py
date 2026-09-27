@@ -117,14 +117,22 @@ def get_chefman_products():
         print("Impact response keys:", list(data.keys()))
         print("Impact response preview:", str(data)[:3000])
 
+        if data.get("Results"):
+            first_product = data["Results"][0]
+            print("Product fields:", list(first_product.keys()))
+
+            offers = first_product.get("Offers") or []
+            if offers:
+                print("Offer fields:", list(offers[0].keys()))
+
         batch = (
             data.get("Results")
-            or
-            data.get("Products")
+            or data.get("Products")
             or data.get("Items")
             or data.get("Records")
             or []
         )
+        
 
         if not batch:
             break

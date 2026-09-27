@@ -118,6 +118,8 @@ def get_chefman_products():
         print("Impact response preview:", str(data)[:3000])
 
         batch = (
+            data.get("Results")
+            or
             data.get("Products")
             or data.get("Items")
             or data.get("Records")

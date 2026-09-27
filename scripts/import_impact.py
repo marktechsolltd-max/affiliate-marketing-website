@@ -70,9 +70,18 @@ def get_chefman_products():
     f"{IMPACT_ACCOUNT_SID}/Catalogs/{CATALOG_ID}/Items"
 )
 
+   def get_chefman_products():
+    url = (
+        f"{IMPACT_API_BASE}/Mediapartners/"
+        f"{IMPACT_ACCOUNT_SID}/Catalogs/{CATALOG_ID}/Items"
+    )
+
     params = {
         "PageSize": 250
     }
+
+    products = []
+    page = 1
 
     products = []
     page = 1

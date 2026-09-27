@@ -73,8 +73,10 @@ def get_chefman_products():
 def get_chefman_products():
     url = (
         f"{IMPACT_API_BASE}/Mediapartners/"
-        f"{IMPACT_ACCOUNT_SID}/Catalogs/{CATALOG_ID}/Items"
+        f"{IMPACT_ACCOUNT_SID}/Marketplace/Products/"
+        f"Programs/{PROGRAM_ID}/Catalogs/{CATALOG_ID}/Products"
     )
+
 
     params = {
         "PageSize": 250
@@ -111,6 +113,9 @@ def get_chefman_products():
             sys.exit(1)
 
         data = response.json()
+
+        print("Impact response keys:", list(data.keys()))
+        print("Impact response preview:", str(data)[:3000])
 
         batch = (
             data.get("Products")

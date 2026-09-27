@@ -3,6 +3,7 @@ import sys
 import requests
 from supabase import create_client
 
+
 # ---------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------
@@ -31,15 +32,19 @@ supabase = create_client(
 
 def first_value(item, *names):
     """Return the first non-empty value found."""
+    if not isinstance(item, dict):
+        return None
+
     for name in names:
         value = item.get(name)
         if value is not None and value != "":
             return value
+
     return None
 
 
 def to_number(value):
-    """Convert an API price value to a numeric value when possible."""
+    """Convert a numeric API value when possible."""
     if value is None or value == "":
         return None
 
@@ -51,6 +56,7 @@ def to_number(value):
 
 
 def to_integer(value):
+    """Convert a value to integer when possible."""
     if value is None or value == "":
         return None
 
@@ -65,25 +71,16 @@ def to_integer(value):
 # ---------------------------------------------------------
 
 def get_chefman_products():
-  url = (
-    f"{IMPACT_API_BASE}/Mediapartners/"
-    f"{IMPACT_ACCOUNT_SID}/Catalogs/{CATALOG_ID}/Items"
-)
 
-def get_chefman_products():
     url = (
         f"{IMPACT_API_BASE}/Mediapartners/"
         f"{IMPACT_ACCOUNT_SID}/Marketplace/Products/"
         f"Programs/{PROGRAM_ID}/Catalogs/{CATALOG_ID}/Products"
     )
 
-
     params = {
         "PageSize": 250
     }
-
-    products = []
-    page = 1
 
     products = []
     page = 1
@@ -93,6 +90,7 @@ def get_chefman_products():
     print(f"Catalog: {CATALOG_ID}")
 
     while True:
+
         params["Page"] = page
 
         response = requests.get(
@@ -114,25 +112,7 @@ def get_chefman_products():
 
         data = response.json()
 
-        print("Impact response keys:", list(data.keys()))
-        print("Impact response preview:", str(data)[:3000])
-
-        if data.get("Results"):
-            first_product = data["Results"][0]
-            print("Product fields:", list(first_product.keys()))
-
-            offers = first_product.get("Offers") or []
-            if offers:
-                print("Offer fields:", list(offers[0].keys()))
-
-        batch = (
-            data.get("Results")
-            or data.get("Products")
-            or data.get("Items")
-            or data.get("Records")
-            or []
-        )
-        
+        batch = data.get("Results") or []
 
         if not batch:
             break
@@ -145,15 +125,24 @@ def get_chefman_products():
             f"({len(products)} total)"
         )
 
-        # Stop when the final partial page is reached.
+        total_pages = data.get("TotalPages")
+
+        if total_pages:
+            try:
+                if page >= int(total_pages):
+                    break
+            except (TypeError, ValueError):
+                pass
+
         if len(batch) < params["PageSize"]:
             break
 
         page += 1
 
-        # Safety guard against accidental infinite pagination.
         if page > 1000:
-            raise RuntimeError("Pagination safety limit reached.")
+            raise RuntimeError(
+                "Pagination safety limit reached."
+            )
 
     return products
 
@@ -164,117 +153,152 @@ def get_chefman_products():
 
 def normalize_product(item):
 
-    external_id = first_value(
-        item,
-        "Id",
-        "ProductId",
-        "CatalogItemId",
-        "UniqueMerchantSKU",
-        "Sku",
-        "SKU"
+    offers = item.get("Offers") or []
+
+    if not offers:
+        return None
+
+    offer = offers[0]
+
+    external_id = (
+        first_value(
+            offer,
+            "CatalogItemId",
+            "Sku"
+        )
+        or first_value(
+            item,
+            "Id"
+        )
     )
 
-    title = first_value(
-        item,
-        "Name",
-        "ProductName",
-        "Title"
+    title = (
+        first_value(
+            item,
+            "Name",
+            "ProductName",
+            "Title"
+        )
+        or first_value(
+            offer,
+            "Name"
+        )
+    )
+
+    # Impact marketplace response provides the merchant product URL
+    # in the offer. This is stored until a dedicated tracking/deep-link
+    # generation step is added.
+    product_url = first_value(
+        offer,
+        "OriginalUrl",
+        "Url"
     )
 
     affiliate_url = first_value(
-        item,
-        "TrackingLink",
-        "TrackingUrl",
+        offer,
         "Url",
-        "ProductUrl",
-        "ProductURL"
+        "OriginalUrl"
     )
 
     if not external_id or not title or not affiliate_url:
         return None
 
-    merchant = first_value(
-        item,
-        "AdvertiserName",
-        "ProgramName",
-        "MerchantName",
-        "Brand"
-    ) or "Chefman"
+    program = offer.get("Program") or {}
 
-    brand = first_value(
-        item,
-        "Brand",
-        "Manufacturer"
-    ) or "Chefman"
+    merchant = (
+        program.get("Name")
+        or "Chefman"
+    ).strip()
+
+    product_brand = item.get("ProductBrand") or {}
+    manufacturer = item.get("Manufacturer") or {}
+
+    brand = (
+        product_brand.get("Name")
+        or manufacturer.get("Name")
+        or "Chefman"
+    )
 
     description = first_value(
-        item,
-        "Description",
-        "ProductDescription"
+        offer,
+        "Description"
     )
 
-    category = first_value(
-        item,
-        "Category",
-        "ProductCategory",
-        "ProductType"
-    )
+    category_data = item.get("Category") or {}
 
-    subcategory = first_value(
-        item,
-        "SubCategory",
-        "Subcategory"
-    )
+    if isinstance(category_data, dict):
+        category = (
+            category_data.get("Path")
+            or category_data.get("Name")
+        )
+    else:
+        category = str(category_data) if category_data else None
 
-    image_url = first_value(
-        item,
-        "ImageUrl",
-        "ImageURL",
-        "ImageUri",
-        "Image"
-    )
+    labels = offer.get("Labels") or item.get("Labels") or []
 
-    product_url = first_value(
-        item,
-        "LandingPageUrl",
-        "ProductUrl",
-        "ProductURL"
+    if isinstance(labels, list) and labels:
+        subcategory = str(labels[0])
+    else:
+        subcategory = None
+
+    image_url = (
+        first_value(
+            offer,
+            "ImageUrl"
+        )
+        or first_value(
+            item,
+            "ImageUrl",
+            "ImageURL",
+            "ImageUri",
+            "Image"
+        )
     )
 
     price = to_number(
         first_value(
-            item,
+            offer,
             "CurrentPrice",
-            "Price",
-            "SalePrice"
+            "DollarPrice"
+        )
+        or first_value(
+            item,
+            "BestPrice"
         )
     )
 
-    currency = first_value(
-        item,
-        "Currency",
-        "CurrencyCode"
-    ) or "USD"
-
-    availability = first_value(
-        item,
-        "StockAvailability",
-        "Availability",
-        "StockStatus"
+    currency = (
+        first_value(
+            offer,
+            "Currency"
+        )
+        or first_value(
+            item,
+            "Currency"
+        )
+        or "USD"
     )
 
+    availability = first_value(
+        offer,
+        "StockAvailability"
+    )
+
+    if availability is None:
+        in_stock = item.get("ContainsOfferInStock")
+
+        if in_stock is True:
+            availability = "In Stock"
+        elif in_stock is False:
+            availability = "Out of Stock"
+
     sku = first_value(
-        item,
-        "UniqueMerchantSKU",
-        "Sku",
-        "SKU"
+        offer,
+        "Sku"
     )
 
     upc = first_value(
-        item,
-        "UPC",
-        "Upc",
-        "GTIN",
+        offer,
         "Gtin"
     )
 
@@ -298,7 +322,7 @@ def normalize_product(item):
         "external_id": str(external_id),
         "network": "IMPACT",
         "merchant": merchant,
-        "title": title,
+        "title": str(title),
         "description": description,
         "category": category,
         "subcategory": subcategory,
@@ -327,6 +351,7 @@ def import_into_supabase(products):
     skipped = 0
 
     for item in products:
+
         product = normalize_product(item)
 
         if product:
@@ -334,8 +359,15 @@ def import_into_supabase(products):
         else:
             skipped += 1
 
-    print(f"Products ready for Supabase: {len(normalized)}")
-    print(f"Skipped incomplete products: {skipped}")
+    print(
+        f"Products ready for Supabase: "
+        f"{len(normalized)}"
+    )
+
+    print(
+        f"Skipped incomplete products: "
+        f"{skipped}"
+    )
 
     if not normalized:
         raise RuntimeError(
@@ -345,17 +377,30 @@ def import_into_supabase(products):
 
     batch_size = 100
 
-    for start in range(0, len(normalized), batch_size):
-        batch = normalized[start:start + batch_size]
+    for start in range(
+        0,
+        len(normalized),
+        batch_size
+    ):
+
+        batch = normalized[
+            start:start + batch_size
+        ]
 
         supabase.table("products").upsert(
             batch,
             on_conflict="network,external_id"
         ).execute()
 
+        completed = min(
+            start + batch_size,
+            len(normalized)
+        )
+
         print(
-            f"Upserted {min(start + batch_size, len(normalized))}"
-            f"/{len(normalized)} products"
+            f"Upserted "
+            f"{completed}/"
+            f"{len(normalized)} products"
         )
 
     return len(normalized)
@@ -373,19 +418,27 @@ def main():
 
     products = get_chefman_products()
 
-    print(f"Total products retrieved from Impact: {len(products)}")
+    print(
+        f"Total products retrieved from Impact: "
+        f"{len(products)}"
+    )
 
-    if len(products) == 0:
+    if not products:
         raise RuntimeError(
             "Impact returned zero Chefman products. "
             "No database changes were made."
         )
 
-    imported = import_into_supabase(products)
+    imported = import_into_supabase(
+        products
+    )
 
     print("----------------------------------------")
     print("IMPORT COMPLETE")
-    print(f"Imported/updated: {imported}")
+    print(
+        f"Imported/updated: "
+        f"{imported}"
+    )
     print("----------------------------------------")
 
 

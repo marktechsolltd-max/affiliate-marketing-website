@@ -65,14 +65,13 @@ def to_integer(value):
 # ---------------------------------------------------------
 
 def get_chefman_products():
-    url = (
-        f"{IMPACT_API_BASE}/Mediapartners/"
-        f"{IMPACT_ACCOUNT_SID}/Marketplace/Products/"
-        f"Programs/{PROGRAM_ID}/Catalogs/{CATALOG_ID}/Products"
-    )
+  url = (
+    f"{IMPACT_API_BASE}/Mediapartners/"
+    f"{IMPACT_ACCOUNT_SID}/Catalogs/{CATALOG_ID}/Items"
+)
 
     params = {
-        "PageSize": 100
+        "PageSize": 250
     }
 
     products = []

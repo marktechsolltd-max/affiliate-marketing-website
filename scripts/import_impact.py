@@ -186,10 +186,7 @@ def create_tracking_link(offer):
             "Tracking link generation failed "
             f"for SKU {offer.get('Sku')}."
         )
-        print(
-            "HTTP status:",
-            response.status_code
-        )
+        print("HTTP status:", response.status_code)
         print(response.text[:500])
         return None
 
@@ -212,7 +209,7 @@ def create_tracking_link(offer):
 
 
 # ---------------------------------------------------------
-# Normalize Impact product -> Supabase product
+# Normalize Impact product
 # ---------------------------------------------------------
 
 def normalize_product(item):
@@ -401,7 +398,6 @@ def normalize_product(item):
         )
         return None
 
-    # Small pause to avoid unnecessary API bursts.
     time.sleep(0.1)
 
     return {
@@ -446,7 +442,7 @@ def import_into_supabase(products):
             skipped += 1
 
     print(
-        f"Products ready for Supabase: "
+        f"Products normalized: "
         f"{len(normalized)}"
     )
 
@@ -460,6 +456,40 @@ def import_into_supabase(products):
             "No products were normalized. "
             "Stopping before changing the database."
         )
+
+    # -----------------------------------------------------
+    # Remove duplicate network + external_id combinations
+    # before Supabase upsert.
+    # -----------------------------------------------------
+
+    unique_products = {}
+    duplicate_count = 0
+
+    for product in normalized:
+
+        key = (
+            product["network"],
+            product["external_id"]
+        )
+
+        if key in unique_products:
+            duplicate_count += 1
+
+        unique_products[key] = product
+
+    normalized = list(
+        unique_products.values()
+    )
+
+    print(
+        f"Duplicate products removed: "
+        f"{duplicate_count}"
+    )
+
+    print(
+        f"Unique products ready for Supabase: "
+        f"{len(normalized)}"
+    )
 
     batch_size = 100
 

@@ -103,6 +103,7 @@ def load_sidi_catalog():
 def normalize_product(row):
     external_id = find_value(
         row,
+        "Unique Merchant SKU",
         "SKU",
         "Product ID",
         "Product Id",

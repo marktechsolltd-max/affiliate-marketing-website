@@ -15,11 +15,20 @@ IMPACT_AUTH_TOKEN = os.environ["IMPACT_AUTH_TOKEN"]
 SUPABASE_URL = os.environ["SUPABASE_URL"]
 SUPABASE_SECRET_KEY = os.environ["SUPABASE_SECRET_KEY"]
 
-# Chefman
-PROGRAM_ID = "49263"
-CATALOG_ID = "34536"
-
 IMPACT_API_BASE = "https://api.impact.com"
+
+BRANDS = [
+    {
+        "name": "Chefman",
+        "program_id": "49263",
+        "catalog_id": "34536",
+    },
+    {
+        "name": "DOWAN LLC",
+        "program_id": "51140",
+        "catalog_id": "32698",
+    },
+]
 
 supabase = create_client(
     SUPABASE_URL,
@@ -68,12 +77,16 @@ def to_integer(value):
 # Impact API - Products
 # ---------------------------------------------------------
 
-def get_chefman_products():
+def get_products(brand):
+
+    program_id = brand["program_id"]
+    catalog_id = brand["catalog_id"]
+    brand_name = brand["name"]
 
     url = (
         f"{IMPACT_API_BASE}/Mediapartners/"
         f"{IMPACT_ACCOUNT_SID}/Marketplace/Products/"
-        f"Programs/{PROGRAM_ID}/Catalogs/{CATALOG_ID}/Products"
+        f"Programs/{program_id}/Catalogs/{catalog_id}/Products"
     )
 
     params = {
@@ -83,9 +96,10 @@ def get_chefman_products():
     products = []
     page = 1
 
-    print("Connecting to Impact...")
-    print(f"Program: {PROGRAM_ID}")
-    print(f"Catalog: {CATALOG_ID}")
+    print("----------------------------------------")
+    print(f"Connecting to Impact: {brand_name}")
+    print(f"Program: {program_id}")
+    print(f"Catalog: {catalog_id}")
 
     while True:
 
@@ -103,10 +117,10 @@ def get_chefman_products():
         )
 
         if response.status_code != 200:
-            print("Impact API request failed.")
+            print(f"Impact API request failed for {brand_name}.")
             print("HTTP status:", response.status_code)
             print(response.text[:1000])
-            sys.exit(1)
+            return []
 
         data = response.json()
 
@@ -114,6 +128,10 @@ def get_chefman_products():
 
         if not batch:
             break
+
+        for item in batch:
+            item["_import_brand_name"] = brand_name
+            item["_import_program_id"] = program_id
 
         products.extend(batch)
 
@@ -139,8 +157,13 @@ def get_chefman_products():
 
         if page > 1000:
             raise RuntimeError(
-                "Pagination safety limit reached."
+                f"Pagination safety limit reached for {brand_name}."
             )
+
+    print(
+        f"{brand_name}: "
+        f"{len(products)} products retrieved."
+    )
 
     return products
 
@@ -149,7 +172,7 @@ def get_chefman_products():
 # Impact API - Tracking Links
 # ---------------------------------------------------------
 
-def create_tracking_link(offer):
+def create_tracking_link(offer, program_id):
 
     destination_url = first_value(
         offer,
@@ -163,7 +186,7 @@ def create_tracking_link(offer):
     tracking_url = (
         f"{IMPACT_API_BASE}/Mediapartners/"
         f"{IMPACT_ACCOUNT_SID}/Programs/"
-        f"{PROGRAM_ID}/TrackingLinks"
+        f"{program_id}/TrackingLinks"
     )
 
     payload = {
@@ -214,6 +237,16 @@ def create_tracking_link(offer):
 
 def normalize_product(item):
 
+    import_brand_name = item.get(
+        "_import_brand_name",
+        "Impact Merchant"
+    )
+
+    program_id = item.get("_import_program_id")
+
+    if not program_id:
+        return None
+
     offers = item.get("Offers") or []
 
     if not offers:
@@ -259,7 +292,7 @@ def normalize_product(item):
 
     merchant = (
         program.get("Name")
-        or "Chefman"
+        or import_brand_name
     ).strip()
 
     product_brand = item.get("ProductBrand") or {}
@@ -268,7 +301,7 @@ def normalize_product(item):
     brand = (
         product_brand.get("Name")
         or manufacturer.get("Name")
-        or "Chefman"
+        or import_brand_name
     )
 
     description = first_value(
@@ -383,12 +416,13 @@ def normalize_product(item):
     )
 
     print(
-        f"Generating tracking link: "
+        f"[{import_brand_name}] Generating tracking link: "
         f"{title[:60]}"
     )
 
     affiliate_url = create_tracking_link(
-        offer
+        offer,
+        program_id
     )
 
     if not affiliate_url:
@@ -532,21 +566,35 @@ def main():
     print("Affiliate Marketplace - Impact Importer")
     print("----------------------------------------")
 
-    products = get_chefman_products()
+    all_products = []
 
+    for brand in BRANDS:
+
+        products = get_products(brand)
+
+        if not products:
+            print(
+                f"WARNING: Impact returned zero products "
+                f"for {brand['name']}."
+            )
+            continue
+
+        all_products.extend(products)
+
+    print("----------------------------------------")
     print(
         f"Total products retrieved from Impact: "
-        f"{len(products)}"
+        f"{len(all_products)}"
     )
 
-    if not products:
+    if not all_products:
         raise RuntimeError(
-            "Impact returned zero Chefman products. "
+            "Impact returned zero products for all configured brands. "
             "No database changes were made."
         )
 
     imported = import_into_supabase(
-        products
+        all_products
     )
 
     print("----------------------------------------")

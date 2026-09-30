@@ -2,6 +2,8 @@ name: Import Impact Products
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "15 8 * * *"
 
 jobs:
   import-products:

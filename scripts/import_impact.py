@@ -25,7 +25,7 @@ PROGRAM_ID = "50060"
 
 # This will be replaced with the permanent automated
 # Sidi catalog source after the first successful import.
-SIDI_CATALOG_FILE = "data/Sidi-US-USD_IR.txt.gz"
+SIDI_CATALOG_FILE = "Sidi-US-USD_IR.txt.gz"
 
 
 def clean(value):

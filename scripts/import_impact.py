@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import requests
 from supabase import create_client
 
@@ -31,7 +32,6 @@ supabase = create_client(
 # ---------------------------------------------------------
 
 def first_value(item, *names):
-    """Return the first non-empty value found."""
     if not isinstance(item, dict):
         return None
 
@@ -44,7 +44,6 @@ def first_value(item, *names):
 
 
 def to_number(value):
-    """Convert a numeric API value when possible."""
     if value is None or value == "":
         return None
 
@@ -56,7 +55,6 @@ def to_number(value):
 
 
 def to_integer(value):
-    """Convert a value to integer when possible."""
     if value is None or value == "":
         return None
 
@@ -67,7 +65,7 @@ def to_integer(value):
 
 
 # ---------------------------------------------------------
-# Impact API
+# Impact API - Products
 # ---------------------------------------------------------
 
 def get_chefman_products():
@@ -148,6 +146,72 @@ def get_chefman_products():
 
 
 # ---------------------------------------------------------
+# Impact API - Tracking Links
+# ---------------------------------------------------------
+
+def create_tracking_link(offer):
+
+    destination_url = first_value(
+        offer,
+        "OriginalUrl",
+        "Url"
+    )
+
+    if not destination_url:
+        return None
+
+    tracking_url = (
+        f"{IMPACT_API_BASE}/Mediapartners/"
+        f"{IMPACT_ACCOUNT_SID}/Programs/"
+        f"{PROGRAM_ID}/TrackingLinks"
+    )
+
+    payload = {
+        "DeepLink": destination_url
+    }
+
+    response = requests.post(
+        tracking_url,
+        auth=(IMPACT_ACCOUNT_SID, IMPACT_AUTH_TOKEN),
+        headers={
+            "Accept": "application/json",
+            "Impact-Version": "16"
+        },
+        data=payload,
+        timeout=60
+    )
+
+    if response.status_code not in (200, 201):
+        print(
+            "Tracking link generation failed "
+            f"for SKU {offer.get('Sku')}."
+        )
+        print(
+            "HTTP status:",
+            response.status_code
+        )
+        print(response.text[:500])
+        return None
+
+    try:
+        data = response.json()
+    except ValueError:
+        return None
+
+    tracking_link = first_value(
+        data,
+        "TrackingURL",
+        "TrackingUrl",
+        "Url",
+        "URL",
+        "ShortUrl",
+        "ShortURL"
+    )
+
+    return tracking_link
+
+
+# ---------------------------------------------------------
 # Normalize Impact product -> Supabase product
 # ---------------------------------------------------------
 
@@ -185,22 +249,13 @@ def normalize_product(item):
         )
     )
 
-    # Impact marketplace response provides the merchant product URL
-    # in the offer. This is stored until a dedicated tracking/deep-link
-    # generation step is added.
     product_url = first_value(
         offer,
         "OriginalUrl",
         "Url"
     )
 
-    affiliate_url = first_value(
-        offer,
-        "Url",
-        "OriginalUrl"
-    )
-
-    if not external_id or not title or not affiliate_url:
+    if not external_id or not title or not product_url:
         return None
 
     program = offer.get("Program") or {}
@@ -232,9 +287,17 @@ def normalize_product(item):
             or category_data.get("Name")
         )
     else:
-        category = str(category_data) if category_data else None
+        category = (
+            str(category_data)
+            if category_data
+            else None
+        )
 
-    labels = offer.get("Labels") or item.get("Labels") or []
+    labels = (
+        offer.get("Labels")
+        or item.get("Labels")
+        or []
+    )
 
     if isinstance(labels, list) and labels:
         subcategory = str(labels[0])
@@ -285,10 +348,14 @@ def normalize_product(item):
     )
 
     if availability is None:
-        in_stock = item.get("ContainsOfferInStock")
+
+        in_stock = item.get(
+            "ContainsOfferInStock"
+        )
 
         if in_stock is True:
             availability = "In Stock"
+
         elif in_stock is False:
             availability = "Out of Stock"
 
@@ -317,6 +384,25 @@ def normalize_product(item):
             "NumberOfReviews"
         )
     )
+
+    print(
+        f"Generating tracking link: "
+        f"{title[:60]}"
+    )
+
+    affiliate_url = create_tracking_link(
+        offer
+    )
+
+    if not affiliate_url:
+        print(
+            "No tracking link generated; "
+            "product skipped."
+        )
+        return None
+
+    # Small pause to avoid unnecessary API bursts.
+    time.sleep(0.1)
 
     return {
         "external_id": str(external_id),
@@ -365,7 +451,7 @@ def import_into_supabase(products):
     )
 
     print(
-        f"Skipped incomplete products: "
+        f"Skipped products: "
         f"{skipped}"
     )
 

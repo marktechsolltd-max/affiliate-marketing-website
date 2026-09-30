@@ -13,7 +13,7 @@ IMPACT_ACCOUNT_SID = os.environ["IMPACT_ACCOUNT_SID"]
 IMPACT_AUTH_TOKEN = os.environ["IMPACT_AUTH_TOKEN"]
 
 SUPABASE_URL = os.environ["SUPABASE_URL"]
-SUPABASE_SECRET_KEY = os.environ["SUPABASE_SECRET_KEY"]
+SUPABASE_SECRET_KEY = os.environ["SUPABASE_SECRET_KEY"]+f
 
 IMPACT_API_BASE = "https://api.impact.com"
 
@@ -27,6 +27,11 @@ BRANDS = [
         "name": "DOWAN LLC",
         "program_id": "51140",
         "catalog_id": "32698",
+    },
+    {
+        "name": "Sidi",
+        "program_id": "50060",
+        "catalog_id": "33784",
     },
 ]
 

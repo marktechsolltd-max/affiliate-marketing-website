@@ -1,13 +1,11 @@
 import os
-import sys
-import time
 import requests
 from supabase import create_client
 
 
-# ---------------------------------------------------------
+# =========================================================
 # Configuration
-# ---------------------------------------------------------
+# =========================================================
 
 IMPACT_ACCOUNT_SID = os.environ["IMPACT_ACCOUNT_SID"]
 IMPACT_AUTH_TOKEN = os.environ["IMPACT_AUTH_TOKEN"]
@@ -16,6 +14,16 @@ SUPABASE_URL = os.environ["SUPABASE_URL"]
 SUPABASE_SECRET_KEY = os.environ["SUPABASE_SECRET_KEY"]
 
 IMPACT_API_BASE = "https://api.impact.com"
+
+supabase = create_client(
+    SUPABASE_URL,
+    SUPABASE_SECRET_KEY
+)
+
+
+# =========================================================
+# Impact catalogs to import
+# =========================================================
 
 BRANDS = [
     {
@@ -35,22 +43,18 @@ BRANDS = [
     },
 ]
 
-supabase = create_client(
-    SUPABASE_URL,
-    SUPABASE_SECRET_KEY
-)
 
-
-# ---------------------------------------------------------
+# =========================================================
 # Helpers
-# ---------------------------------------------------------
+# =========================================================
 
-def first_value(item, *names):
-    if not isinstance(item, dict):
+def first_value(data, *keys):
+    if not isinstance(data, dict):
         return None
 
-    for name in names:
-        value = item.get(name)
+    for key in keys:
+        value = data.get(key)
+
         if value is not None and value != "":
             return value
 
@@ -62,8 +66,7 @@ def to_number(value):
         return None
 
     try:
-        cleaned = str(value).replace("$", "").replace(",", "").strip()
-        return float(cleaned)
+        return float(value)
     except (TypeError, ValueError):
         return None
 
@@ -73,14 +76,14 @@ def to_integer(value):
         return None
 
     try:
-        return int(value)
+        return int(float(value))
     except (TypeError, ValueError):
         return None
 
 
-# ---------------------------------------------------------
-# Impact API - Products
-# ---------------------------------------------------------
+# =========================================================
+# Impact Catalog Items API
+# =========================================================
 
 def get_products(brand):
 
@@ -90,46 +93,57 @@ def get_products(brand):
 
     url = (
         f"{IMPACT_API_BASE}/Mediapartners/"
-        f"{IMPACT_ACCOUNT_SID}/Marketplace/Products/"
-        f"Programs/{program_id}/Catalogs/{catalog_id}/Products"
+        f"{IMPACT_ACCOUNT_SID}/Catalogs/"
+        f"{catalog_id}/Items"
     )
 
-    params = {
-        "PageSize": 250
-    }
-
-    products = []
+    # Impact documents Page/PageSize pagination for catalog
+    # item searching. Start with 250 items per page.
+    page_size = 250
     page = 1
+    products = []
 
     print("----------------------------------------")
-    print(f"Connecting to Impact: {brand_name}")
+    print(f"Connecting to Impact Catalog: {brand_name}")
     print(f"Program: {program_id}")
     print(f"Catalog: {catalog_id}")
 
     while True:
 
-        params["Page"] = page
+        params = {
+            "Page": page,
+            "PageSize": page_size,
+        }
 
         response = requests.get(
             url,
-            auth=(IMPACT_ACCOUNT_SID, IMPACT_AUTH_TOKEN),
+            auth=(
+                IMPACT_ACCOUNT_SID,
+                IMPACT_AUTH_TOKEN
+            ),
             headers={
                 "Accept": "application/json",
                 "Impact-Version": "16"
             },
             params=params,
-            timeout=60
+            timeout=120
         )
 
         if response.status_code != 200:
-            print(f"Impact API request failed for {brand_name}.")
-            print("HTTP status:", response.status_code)
+            print(
+                f"Impact Catalog API request failed "
+                f"for {brand_name}."
+            )
+            print(
+                "HTTP status:",
+                response.status_code
+            )
             print(response.text[:1000])
             return []
 
         data = response.json()
 
-        batch = data.get("Results") or []
+        batch = data.get("Items") or []
 
         if not batch:
             break
@@ -137,6 +151,7 @@ def get_products(brand):
         for item in batch:
             item["_import_brand_name"] = brand_name
             item["_import_program_id"] = program_id
+            item["_import_catalog_id"] = catalog_id
 
         products.extend(batch)
 
@@ -146,6 +161,7 @@ def get_products(brand):
             f"({len(products)} total)"
         )
 
+        # Use API pagination metadata when supplied.
         total_pages = data.get("TotalPages")
 
         if total_pages:
@@ -155,90 +171,31 @@ def get_products(brand):
             except (TypeError, ValueError):
                 pass
 
-        if len(batch) < params["PageSize"]:
+        # A partial page means we reached the end.
+        if len(batch) < page_size:
             break
 
         page += 1
 
+        # Safety guard. 1000 pages at 250/page is
+        # far beyond the current catalogs.
         if page > 1000:
             raise RuntimeError(
-                f"Pagination safety limit reached for {brand_name}."
+                f"Pagination safety limit reached "
+                f"for {brand_name}."
             )
 
     print(
         f"{brand_name}: "
-        f"{len(products)} products retrieved."
+        f"{len(products)} catalog items retrieved."
     )
 
     return products
 
 
-# ---------------------------------------------------------
-# Impact API - Tracking Links
-# ---------------------------------------------------------
-
-def create_tracking_link(offer, program_id):
-
-    destination_url = first_value(
-        offer,
-        "OriginalUrl",
-        "Url"
-    )
-
-    if not destination_url:
-        return None
-
-    tracking_url = (
-        f"{IMPACT_API_BASE}/Mediapartners/"
-        f"{IMPACT_ACCOUNT_SID}/Programs/"
-        f"{program_id}/TrackingLinks"
-    )
-
-    payload = {
-        "DeepLink": destination_url
-    }
-
-    response = requests.post(
-        tracking_url,
-        auth=(IMPACT_ACCOUNT_SID, IMPACT_AUTH_TOKEN),
-        headers={
-            "Accept": "application/json",
-            "Impact-Version": "16"
-        },
-        data=payload,
-        timeout=60
-    )
-
-    if response.status_code not in (200, 201):
-        print(
-            "Tracking link generation failed "
-            f"for SKU {offer.get('Sku')}."
-        )
-        print("HTTP status:", response.status_code)
-        print(response.text[:500])
-        return None
-
-    try:
-        data = response.json()
-    except ValueError:
-        return None
-
-    tracking_link = first_value(
-        data,
-        "TrackingURL",
-        "TrackingUrl",
-        "Url",
-        "URL",
-        "ShortUrl",
-        "ShortURL"
-    )
-
-    return tracking_link
-
-
-# ---------------------------------------------------------
-# Normalize Impact product
-# ---------------------------------------------------------
+# =========================================================
+# Normalize Impact Catalog Item
+# =========================================================
 
 def normalize_product(item):
 
@@ -247,130 +204,82 @@ def normalize_product(item):
         "Impact Merchant"
     )
 
-    program_id = item.get("_import_program_id")
-
-    if not program_id:
-        return None
-
-    offers = item.get("Offers") or []
-
-    if not offers:
-        return None
-
-    offer = offers[0]
-
-    external_id = (
-        first_value(
-            offer,
-            "CatalogItemId",
-            "Sku"
-        )
-        or first_value(
-            item,
-            "Id"
-        )
+    external_id = first_value(
+        item,
+        "CatalogItemId",
+        "Id"
     )
 
-    title = (
-        first_value(
-            item,
-            "Name",
-            "ProductName",
-            "Title"
-        )
-        or first_value(
-            offer,
-            "Name"
-        )
+    title = first_value(
+        item,
+        "Name"
     )
 
-    product_url = first_value(
-        offer,
-        "OriginalUrl",
-        "Url"
+    # IMPORTANT:
+    # Impact Catalog API documents "Url" as the tracking
+    # URL unique to the partner account.
+    affiliate_url = first_value(
+        item,
+        "Url",
+        "MobileUrl"
     )
 
-    if not external_id or not title or not product_url:
+    if not external_id:
         return None
 
-    program = offer.get("Program") or {}
+    if not title:
+        return None
+
+    if not affiliate_url:
+        return None
 
     merchant = (
-        program.get("Name")
+        first_value(
+            item,
+            "CampaignName"
+        )
         or import_brand_name
-    ).strip()
-
-    product_brand = item.get("ProductBrand") or {}
-    manufacturer = item.get("Manufacturer") or {}
+    )
 
     brand = (
-        product_brand.get("Name")
-        or manufacturer.get("Name")
+        first_value(
+            item,
+            "Manufacturer"
+        )
         or import_brand_name
     )
 
     description = first_value(
-        offer,
+        item,
         "Description"
     )
 
-    category_data = item.get("Category") or {}
-
-    if isinstance(category_data, dict):
-        category = (
-            category_data.get("Path")
-            or category_data.get("Name")
-        )
-    else:
-        category = (
-            str(category_data)
-            if category_data
-            else None
-        )
-
-    labels = (
-        offer.get("Labels")
-        or item.get("Labels")
-        or []
+    category = first_value(
+        item,
+        "Category",
+        "OriginalFormatCategory"
     )
 
-    if isinstance(labels, list) and labels:
-        subcategory = str(labels[0])
-    else:
-        subcategory = None
+    subcategory = first_value(
+        item,
+        "SubCategory"
+    )
 
-    image_url = (
-        first_value(
-            offer,
-            "ImageUrl"
-        )
-        or first_value(
-            item,
-            "ImageUrl",
-            "ImageURL",
-            "ImageUri",
-            "Image"
-        )
+    image_url = first_value(
+        item,
+        "ImageUrl"
     )
 
     price = to_number(
         first_value(
-            offer,
-            "CurrentPrice",
-            "DollarPrice"
-        )
-        or first_value(
             item,
-            "BestPrice"
+            "CurrentPrice",
+            "OriginalPrice"
         )
     )
 
     currency = (
         first_value(
-            offer,
-            "Currency"
-        )
-        or first_value(
             item,
             "Currency"
         )
@@ -378,71 +287,39 @@ def normalize_product(item):
     )
 
     availability = first_value(
-        offer,
+        item,
         "StockAvailability"
     )
 
-    if availability is None:
-
-        in_stock = item.get(
-            "ContainsOfferInStock"
+    sku = (
+        first_value(
+            item,
+            "Mpn"
         )
-
-        if in_stock is True:
-            availability = "In Stock"
-
-        elif in_stock is False:
-            availability = "Out of Stock"
-
-    sku = first_value(
-        offer,
-        "Sku"
+        or first_value(
+            item,
+            "CatalogItemId"
+        )
     )
 
     upc = first_value(
-        offer,
+        item,
         "Gtin"
     )
 
-    rating = to_number(
-        first_value(
-            item,
-            "Rating",
-            "AverageRating"
-        )
-    )
+    # The Catalog API does not document dedicated
+    # rating/review-count fields in the standard model.
+    rating = None
+    review_count = None
 
-    review_count = to_integer(
-        first_value(
-            item,
-            "ReviewCount",
-            "NumberOfReviews"
-        )
-    )
-
-    print(
-        f"[{import_brand_name}] Generating tracking link: "
-        f"{title[:60]}"
-    )
-
-    affiliate_url = create_tracking_link(
-        offer,
-        program_id
-    )
-
-    if not affiliate_url:
-        print(
-            "No tracking link generated; "
-            "product skipped."
-        )
-        return None
-
-    time.sleep(0.1)
+    # The catalog's Url is already an Impact tracking URL.
+    # Store it as both the click destination and affiliate URL.
+    product_url = affiliate_url
 
     return {
         "external_id": str(external_id),
         "network": "IMPACT",
-        "merchant": merchant,
+        "merchant": str(merchant),
         "title": str(title),
         "description": description,
         "category": category,
@@ -462,9 +339,9 @@ def normalize_product(item):
     }
 
 
-# ---------------------------------------------------------
+# =========================================================
 # Supabase
-# ---------------------------------------------------------
+# =========================================================
 
 def import_into_supabase(products):
 
@@ -480,6 +357,7 @@ def import_into_supabase(products):
         else:
             skipped += 1
 
+    print("----------------------------------------")
     print(
         f"Products normalized: "
         f"{len(normalized)}"
@@ -496,10 +374,8 @@ def import_into_supabase(products):
             "Stopping before changing the database."
         )
 
-    # -----------------------------------------------------
     # Remove duplicate network + external_id combinations
-    # before Supabase upsert.
-    # -----------------------------------------------------
+    # before sending records to Supabase.
 
     unique_products = {}
     duplicate_count = 0
@@ -561,9 +437,9 @@ def import_into_supabase(products):
     return len(normalized)
 
 
-# ---------------------------------------------------------
+# =========================================================
 # Main
-# ---------------------------------------------------------
+# =========================================================
 
 def main():
 
@@ -579,14 +455,15 @@ def main():
 
         if not products:
             print(
-                f"WARNING: Impact returned zero products "
-                f"for {brand['name']}."
+                f"WARNING: Impact returned zero "
+                f"catalog items for {brand['name']}."
             )
             continue
 
         all_products.extend(products)
 
     print("----------------------------------------")
+
     print(
         f"Total products retrieved from Impact: "
         f"{len(all_products)}"
@@ -594,7 +471,8 @@ def main():
 
     if not all_products:
         raise RuntimeError(
-            "Impact returned zero products for all configured brands. "
+            "Impact returned zero products for all "
+            "configured catalogs. "
             "No database changes were made."
         )
 
@@ -604,10 +482,12 @@ def main():
 
     print("----------------------------------------")
     print("IMPORT COMPLETE")
+
     print(
         f"Imported/updated: "
         f"{imported}"
     )
+
     print("----------------------------------------")
 
 

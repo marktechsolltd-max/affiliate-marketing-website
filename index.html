@@ -3,54 +3,313 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Affiliate Marketplace</title>
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f7fa;color:#1f2937}
-header{background:#111827;color:white;padding:18px 5%}
-.topbar{max-width:1400px;margin:auto;display:flex;align-items:center;gap:25px;flex-wrap:wrap}
-.logo{font-size:24px;font-weight:bold}
-nav{display:flex;gap:18px;flex-wrap:wrap}
-nav a{color:white;text-decoration:none;font-weight:600}
-.search-wrap{flex:1;min-width:250px}
-#searchInput{width:100%;padding:12px 15px;border:0;border-radius:8px;font-size:16px}
-.hero{background:white;text-align:center;padding:55px 20px 40px;border-bottom:1px solid #e5e7eb}
-.hero h1{margin:0 0 12px;font-size:clamp(32px,5vw,52px)}
-.hero p{max-width:750px;margin:auto;font-size:18px;color:#6b7280;line-height:1.6}
-main{max-width:1400px;margin:auto;padding:35px 5%}
-.section-title{text-align:center;font-size:30px;margin-bottom:10px}
-.section-subtitle{text-align:center;color:#6b7280;margin-bottom:30px}
-.niches{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:40px}
-.niche-button{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:20px 12px;cursor:pointer;font-size:15px;font-weight:700;min-height:82px}
-.niche-button:hover,.niche-button.active{background:#111827;color:white}
-.niche-icon{display:block;font-size:26px;margin-bottom:7px}
-.product-header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:22px}
-#productCount{color:#6b7280;font-weight:600}
-.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px}
-.product-card{background:white;border-radius:14px;overflow:hidden;border:1px solid #e5e7eb;display:flex;flex-direction:column;min-height:420px}
-.product-card img{width:100%;height:220px;object-fit:contain;background:white;padding:12px}
-.product-info{padding:16px;display:flex;flex-direction:column;flex:1}
-.brand{color:#6b7280;font-size:13px;font-weight:bold;margin-bottom:8px;text-transform:uppercase}
-.product-title{font-size:16px;font-weight:700;line-height:1.4;margin-bottom:12px}
-.price{font-size:20px;font-weight:800;margin-top:auto;margin-bottom:14px}
-.shop-button{display:block;background:#111827;color:white;text-decoration:none;text-align:center;padding:12px;border-radius:8px;font-weight:bold}
-.pagination{display:flex;justify-content:center;align-items:center;gap:14px;margin:35px 0}
-.page-button{border:0;background:#111827;color:white;padding:11px 18px;border-radius:8px;cursor:pointer;font-weight:bold}
-.page-button:disabled{background:#9ca3af;cursor:not-allowed}
-#pageInfo{font-weight:bold}
-.message{grid-column:1/-1;text-align:center;padding:50px 20px;color:#6b7280;font-size:18px}
-footer{background:#111827;color:#d1d5db;padding:35px 5%;text-align:center;line-height:1.7;margin-top:50px}
-footer p{max-width:900px;margin:8px auto}
+
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f7fa;
+  color:#1f2937;
+}
+
+header{
+  background:#111827;
+  color:white;
+  padding:18px 5%;
+}
+
+.topbar{
+  max-width:1400px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  gap:25px;
+  flex-wrap:wrap;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:bold;
+}
+
+nav{
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+}
+
+nav a{
+  color:white;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.search-wrap{
+  flex:1;
+  min-width:250px;
+}
+
+#searchInput{
+  width:100%;
+  padding:12px 15px;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+}
+
+.hero{
+  background:white;
+  text-align:center;
+  padding:55px 20px 40px;
+  border-bottom:1px solid #e5e7eb;
+}
+
+.hero h1{
+  margin:0 0 12px;
+  font-size:clamp(32px,5vw,52px);
+}
+
+.hero p{
+  max-width:750px;
+  margin:auto;
+  font-size:18px;
+  color:#6b7280;
+  line-height:1.6;
+}
+
+main{
+  max-width:1400px;
+  margin:auto;
+  padding:35px 5%;
+}
+
+.section-title{
+  text-align:center;
+  font-size:30px;
+  margin-bottom:10px;
+}
+
+.section-subtitle{
+  text-align:center;
+  color:#6b7280;
+  margin-bottom:30px;
+}
+
+.niches{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:14px;
+  margin-bottom:30px;
+}
+
+.niche-button{
+  background:white;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:18px 12px;
+  cursor:pointer;
+  font-size:15px;
+  font-weight:700;
+  min-height:78px;
+}
+
+.niche-button:hover,
+.niche-button.active{
+  background:#111827;
+  color:white;
+}
+
+.niche-icon{
+  display:block;
+  font-size:26px;
+  margin-bottom:7px;
+}
+
+.sub-section{
+  display:none;
+  margin-bottom:35px;
+}
+
+.sub-section h3{
+  text-align:center;
+  margin-bottom:18px;
+  font-size:23px;
+}
+
+.sub-niches{
+  max-width:900px;
+  margin:auto;
+}
+
+.product-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  flex-wrap:wrap;
+  margin-bottom:22px;
+}
+
+#productCount{
+  color:#6b7280;
+  font-weight:600;
+}
+
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  gap:22px;
+}
+
+.product-card{
+  background:white;
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid #e5e7eb;
+  display:flex;
+  flex-direction:column;
+  min-height:420px;
+}
+
+.product-card img{
+  width:100%;
+  height:220px;
+  object-fit:contain;
+  background:white;
+  padding:12px;
+}
+
+.product-info{
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  flex:1;
+}
+
+.brand{
+  color:#6b7280;
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:8px;
+  text-transform:uppercase;
+}
+
+.product-title{
+  font-size:16px;
+  font-weight:700;
+  line-height:1.4;
+  margin-bottom:12px;
+}
+
+.price{
+  font-size:20px;
+  font-weight:800;
+  margin-top:auto;
+  margin-bottom:14px;
+}
+
+.shop-button{
+  display:block;
+  background:#111827;
+  color:white;
+  text-decoration:none;
+  text-align:center;
+  padding:12px;
+  border-radius:8px;
+  font-weight:bold;
+}
+
+.pagination{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  margin:35px 0;
+}
+
+.page-button{
+  border:none;
+  background:#111827;
+  color:white;
+  padding:11px 18px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.page-button:disabled{
+  background:#9ca3af;
+  cursor:not-allowed;
+}
+
+#pageInfo{
+  font-weight:bold;
+}
+
+.message{
+  grid-column:1/-1;
+  text-align:center;
+  padding:50px 20px;
+  color:#6b7280;
+  font-size:18px;
+}
+
+footer{
+  background:#111827;
+  color:#d1d5db;
+  padding:35px 5%;
+  text-align:center;
+  line-height:1.7;
+  margin-top:50px;
+}
+
+footer p{
+  max-width:900px;
+  margin:8px auto;
+}
+
 @media(max-width:600px){
- .topbar{display:block}
- .logo{margin-bottom:15px}
- nav{margin-bottom:15px}
- .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
- .product-card{min-height:350px}
- .product-card img{height:160px}
- .product-info{padding:11px}
- .product-title{font-size:14px}
+
+  .topbar{
+    display:block;
+  }
+
+  .logo{
+    margin-bottom:15px;
+  }
+
+  nav{
+    margin-bottom:15px;
+  }
+
+  .products{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  }
+
+  .product-card{
+    min-height:350px;
+  }
+
+  .product-card img{
+    height:160px;
+  }
+
+  .product-info{
+    padding:11px;
+  }
+
+  .product-title{
+    font-size:14px;
+  }
+
+  .price{
+    font-size:17px;
+  }
 }
 </style>
 </head>
@@ -58,8 +317,12 @@ footer p{max-width:900px;margin:8px auto}
 <body>
 
 <header>
+
 <div class="topbar">
-<div class="logo">Affiliate Marketplace</div>
+
+<div class="logo">
+Affiliate Marketplace
+</div>
 
 <nav>
 <a href="#">Home</a>
@@ -69,103 +332,251 @@ footer p{max-width:900px;margin:8px auto}
 </nav>
 
 <div class="search-wrap">
-<input id="searchInput" type="search"
-placeholder="Search products, brands, categories...">
+<input
+id="searchInput"
+type="search"
+placeholder="Search products, brands, categories..."
+>
 </div>
+
 </div>
 </header>
 
 <section class="hero">
-<h1>One Marketplace. Thousands of Products.</h1>
-<p>Browse products from multiple brands and affiliate partners, organized into easy-to-shop niches.</p>
+
+<h1>
+One Marketplace. Thousands of Products.
+</h1>
+
+<p>
+Browse products from multiple brands and affiliate partners,
+organized into easy-to-shop niches.
+</p>
+
 </section>
 
 <main>
 
 <section id="niches">
-<h2 class="section-title">Shop by Niche</h2>
-<p class="section-subtitle">Choose a niche to find products that interest you.</p>
+
+<h2 class="section-title">
+Shop by Niche
+</h2>
+
+<p class="section-subtitle">
+Choose a niche to find products that interest you.
+</p>
 
 <div class="niches">
 
 <button class="niche-button active" data-niche="all">
-<span class="niche-icon">🛍️</span>All Products
+<span class="niche-icon">🛍️</span>
+All Products
 </button>
 
 <button class="niche-button" data-niche="sports">
-<span class="niche-icon">🚴</span>Sports, Cycling & Outdoors
+<span class="niche-icon">🚴</span>
+Sports, Cycling & Outdoors
 </button>
 
 <button class="niche-button" data-niche="kitchen">
-<span class="niche-icon">🍳</span>Kitchen & Dining
+<span class="niche-icon">🍳</span>
+Kitchen & Dining
 </button>
 
 <button class="niche-button" data-niche="home">
-<span class="niche-icon">🏠</span>Home & Garden
+<span class="niche-icon">🏠</span>
+Home & Garden
 </button>
 
 <button class="niche-button" data-niche="electronics">
-<span class="niche-icon">💻</span>Electronics & Technology
+<span class="niche-icon">💻</span>
+Electronics & Technology
 </button>
 
 <button class="niche-button" data-niche="fashion">
-<span class="niche-icon">👕</span>Fashion & Accessories
+<span class="niche-icon">👕</span>
+Fashion & Accessories
 </button>
 
 <button class="niche-button" data-niche="beauty">
-<span class="niche-icon">✨</span>Beauty & Personal Care
+<span class="niche-icon">✨</span>
+Beauty & Personal Care
 </button>
 
 <button class="niche-button" data-niche="health">
-<span class="niche-icon">❤️</span>Health & Wellness
+<span class="niche-icon">❤️</span>
+Health & Wellness
 </button>
 
 <button class="niche-button" data-niche="tools">
-<span class="niche-icon">🛠️</span>Tools & Home Improvement
+<span class="niche-icon">🛠️</span>
+Tools & Home Improvement
 </button>
 
 <button class="niche-button" data-niche="travel">
-<span class="niche-icon">✈️</span>Travel
+<span class="niche-icon">✈️</span>
+Travel
 </button>
 
 <button class="niche-button" data-niche="software">
-<span class="niche-icon">📱</span>Software & Digital Products
+<span class="niche-icon">📱</span>
+Software & Digital Products
 </button>
 
 <button class="niche-button" data-niche="other">
-<span class="niche-icon">📦</span>Other Products
+<span class="niche-icon">📦</span>
+Other Products
 </button>
 
 </div>
+
+
+<!-- SPORTS SUB-NICHES -->
+
+<div id="sportsSubSection" class="sub-section">
+
+<h3>
+Sports, Cycling & Outdoors
+</h3>
+
+<div class="niches sub-niches">
+
+<button class="niche-button sub-niche-button" data-subniche="all">
+<span class="niche-icon">🏆</span>
+All Sports
+</button>
+
+<button class="niche-button sub-niche-button" data-subniche="cycling">
+<span class="niche-icon">🚴</span>
+Cycling
+</button>
+
+<button class="niche-button sub-niche-button" data-subniche="footwear">
+<span class="niche-icon">👟</span>
+Footwear
+</button>
+
+<button class="niche-button sub-niche-button" data-subniche="outdoor">
+<span class="niche-icon">🏕️</span>
+Outdoor
+</button>
+
+<button class="niche-button sub-niche-button" data-subniche="fitness">
+<span class="niche-icon">🏋️</span>
+Fitness
+</button>
+
+</div>
+</div>
+
+
+<!-- KITCHEN SUB-NICHES -->
+
+<div id="kitchenSubSection" class="sub-section">
+
+<h3>
+Kitchen & Dining
+</h3>
+
+<div class="niches sub-niches">
+
+<button class="niche-button kitchen-sub-button active" data-kitchensub="all">
+<span class="niche-icon">🍽️</span>
+All Kitchen
+</button>
+
+<button class="niche-button kitchen-sub-button" data-kitchensub="appliances">
+<span class="niche-icon">🍳</span>
+Kitchen Appliances
+</button>
+
+<button class="niche-button kitchen-sub-button" data-kitchensub="coffee">
+<span class="niche-icon">☕</span>
+Coffee & Tea
+</button>
+
+<button class="niche-button kitchen-sub-button" data-kitchensub="cookware">
+<span class="niche-icon">🥘</span>
+Cookware
+</button>
+
+<button class="niche-button kitchen-sub-button" data-kitchensub="dining">
+<span class="niche-icon">🍽️</span>
+Dinnerware & Dining
+</button>
+
+</div>
+</div>
+
 </section>
+
 
 <section id="products">
 
 <div class="product-header">
+
 <div>
-<h2 id="currentNicheTitle">All Products</h2>
-<div id="productCount">Loading products...</div>
+
+<h2 id="currentNicheTitle">
+All Products
+</h2>
+
+<div id="productCount">
+Loading products...
 </div>
+
+</div>
+
 </div>
 
 <div id="productGrid" class="products">
-<div class="message">Loading marketplace products...</div>
+
+<div class="message">
+Loading marketplace products...
+</div>
+
 </div>
 
 <div class="pagination">
-<button id="previousButton" class="page-button">Previous</button>
-<span id="pageInfo">Page 1</span>
-<button id="nextButton" class="page-button">Next</button>
+
+<button id="previousButton" class="page-button">
+Previous
+</button>
+
+<span id="pageInfo">
+Page 1
+</span>
+
+<button id="nextButton" class="page-button">
+Next
+</button>
+
 </div>
 
 </section>
+
 </main>
 
+
 <footer id="about">
-<p><strong>Affiliate Marketplace</strong></p>
-<p>We may earn a commission when you purchase through qualifying affiliate links on this website, at no additional cost to you.</p>
-<p>Product prices, availability and information may change. Please confirm final details on the merchant's website before purchasing.</p>
+
+<p>
+<strong>Affiliate Marketplace</strong>
+</p>
+
+<p>
+We may earn a commission when you purchase through qualifying
+affiliate links on this website, at no additional cost to you.
+</p>
+
+<p>
+Product prices, availability and information may change.
+Please confirm final details on the merchant's website before purchasing.
+</p>
+
 </footer>
+
 
 <script>
 
@@ -175,425 +586,886 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_agC9QXDTsSnQ2wooArot0Q_meElOOkY";
 
-const BATCH_SIZE = 1000;
-const PRODUCTS_PER_PAGE = 48;
+const BATCH_SIZE=1000;
+const PRODUCTS_PER_PAGE=48;
 
-let databaseProducts = [];
-let allProducts = [];
-let filteredProducts = [];
-let selectedNiche = "all";
-let currentPage = 1;
+let databaseProducts=[];
+let allProducts=[];
+let filteredProducts=[];
 
-const productGrid=document.getElementById("productGrid");
-const productCount=document.getElementById("productCount");
-const searchInput=document.getElementById("searchInput");
-const currentNicheTitle=document.getElementById("currentNicheTitle");
-const previousButton=document.getElementById("previousButton");
-const nextButton=document.getElementById("nextButton");
-const pageInfo=document.getElementById("pageInfo");
+let selectedNiche="all";
+let selectedSubNiche="all";
+let selectedKitchenSub="all";
+
+let currentPage=1;
+
+const productGrid=
+document.getElementById("productGrid");
+
+const productCount=
+document.getElementById("productCount");
+
+const searchInput=
+document.getElementById("searchInput");
+
+const currentNicheTitle=
+document.getElementById("currentNicheTitle");
+
+const previousButton=
+document.getElementById("previousButton");
+
+const nextButton=
+document.getElementById("nextButton");
+
+const pageInfo=
+document.getElementById("pageInfo");
+
 
 function text(value){
- return (value||"").toString().toLowerCase();
+
+return (value||"")
+.toString()
+.toLowerCase();
+
 }
 
-/* Normalize names so Chefman and Chefman Migration
-   are treated as the same brand. */
 
 function normalizedBrand(product){
 
- let brand=text(product.brand||product.merchant);
+return text(
+product.brand||product.merchant
+)
+.replace(/\bmigration\b/g,"")
+.replace(/[®™©]/g,"")
+.replace(/\s+/g," ")
+.trim();
 
- brand=brand
-   .replace(/\bmigration\b/g,"")
-   .replace(/[®™©]/g,"")
-   .replace(/\s+/g," ")
-   .trim();
-
- return brand;
 }
 
-/* Creates one storefront listing for identical
-   product title + brand + price combinations. */
 
 function removeDuplicates(products){
 
- const map=new Map();
+const map=new Map();
 
- products.forEach(product=>{
+products.forEach(product=>{
 
-   const title=text(product.title)
-     .replace(/\s+/g," ")
-     .trim();
+const title=text(product.title)
+.replace(/\s+/g," ")
+.trim();
 
-   const brand=normalizedBrand(product);
+const brand=normalizedBrand(product);
 
-   const price=
-     product.price===null ||
-     product.price===undefined
-       ? ""
-       : Number(product.price).toFixed(2);
+const price=
+product.price===null||
+product.price===undefined
+?""
+:Number(product.price).toFixed(2);
 
-   const key = brand.includes("sidi")
-  ? `sidi|${title}`
-  : `${brand}|${title}|${price}`;
 
-   if(!map.has(key)){
-     map.set(key,product);
-   }
+/* Sidi products:
+   one storefront listing per product title */
 
- });
+const key=brand.includes("sidi")
+?`sidi|${title}`
+:`${brand}|${title}|${price}`;
 
- return Array.from(map.values());
+if(!map.has(key)){
+map.set(key,product);
 }
+
+});
+
+return Array.from(map.values());
+
+}
+
 
 function determineNiche(product){
 
- const combined=[
-   product.category,
-   product.subcategory,
-   product.brand,
-   product.merchant,
-   product.title
- ].map(text).join(" ");
+const combined=[
 
- if(
-   combined.includes("sidi")||
-   combined.includes("cycling")||
-   combined.includes("bicycle")||
-   combined.includes("bike")||
-   combined.includes("sport")||
-   combined.includes("outdoor")||
-   combined.includes("shoe")
- ) return "sports";
+product.category,
+product.subcategory,
+product.brand,
+product.merchant,
+product.title
 
- if(
-   combined.includes("chefman")||
-   combined.includes("dowan")||
-   combined.includes("kitchen")||
-   combined.includes("cook")||
-   combined.includes("dining")||
-   combined.includes("tableware")||
-   combined.includes("drinkware")||
-   combined.includes("appliance")
- ) return "kitchen";
+].map(text).join(" ");
 
- if(
-   combined.includes("home")||
-   combined.includes("garden")||
-   combined.includes("furniture")||
-   combined.includes("decor")||
-   combined.includes("bedding")
- ) return "home";
 
- if(
-   combined.includes("electronic")||
-   combined.includes("computer")||
-   combined.includes("phone")||
-   combined.includes("technology")||
-   combined.includes("audio")||
-   combined.includes("camera")
- ) return "electronics";
+if(
+combined.includes("sidi")||
+combined.includes("cycling")||
+combined.includes("bicycle")||
+combined.includes("bike")||
+combined.includes("sport")||
+combined.includes("outdoor")||
+combined.includes("shoe")
+)return "sports";
 
- if(
-   combined.includes("fashion")||
-   combined.includes("clothing")||
-   combined.includes("apparel")||
-   combined.includes("jewelry")||
-   combined.includes("watch")||
-   combined.includes("handbag")
- ) return "fashion";
 
- if(
-   combined.includes("beauty")||
-   combined.includes("cosmetic")||
-   combined.includes("skincare")||
-   combined.includes("skin care")||
-   combined.includes("hair care")
- ) return "beauty";
+if(
+combined.includes("chefman")||
+combined.includes("dowan")||
+combined.includes("kitchen")||
+combined.includes("cook")||
+combined.includes("dining")||
+combined.includes("tableware")||
+combined.includes("drinkware")||
+combined.includes("appliance")
+)return "kitchen";
 
- if(
-   combined.includes("health")||
-   combined.includes("wellness")||
-   combined.includes("fitness")
- ) return "health";
 
- if(
-   combined.includes("tool")||
-   combined.includes("hardware")||
-   combined.includes("home improvement")
- ) return "tools";
+if(
+combined.includes("home")||
+combined.includes("garden")||
+combined.includes("furniture")||
+combined.includes("decor")||
+combined.includes("bedding")
+)return "home";
 
- if(
-   combined.includes("travel")||
-   combined.includes("luggage")||
-   combined.includes("hotel")||
-   combined.includes("flight")
- ) return "travel";
 
- if(
-   combined.includes("software")||
-   combined.includes("digital")||
-   combined.includes("download")
- ) return "software";
+if(
+combined.includes("electronic")||
+combined.includes("computer")||
+combined.includes("phone")||
+combined.includes("technology")||
+combined.includes("audio")||
+combined.includes("camera")
+)return "electronics";
 
- return "other";
+
+if(
+combined.includes("fashion")||
+combined.includes("clothing")||
+combined.includes("apparel")||
+combined.includes("jewelry")||
+combined.includes("watch")||
+combined.includes("handbag")
+)return "fashion";
+
+
+if(
+combined.includes("beauty")||
+combined.includes("cosmetic")||
+combined.includes("skincare")||
+combined.includes("skin care")||
+combined.includes("hair care")
+)return "beauty";
+
+
+if(
+combined.includes("health")||
+combined.includes("wellness")||
+combined.includes("fitness")
+)return "health";
+
+
+if(
+combined.includes("tool")||
+combined.includes("hardware")||
+combined.includes("home improvement")
+)return "tools";
+
+
+if(
+combined.includes("travel")||
+combined.includes("luggage")||
+combined.includes("hotel")||
+combined.includes("flight")
+)return "travel";
+
+
+if(
+combined.includes("software")||
+combined.includes("digital")||
+combined.includes("download")
+)return "software";
+
+
+return "other";
+
 }
+
+
+function determineSubNiche(product){
+
+const combined=[
+
+product.category,
+product.subcategory,
+product.title,
+product.brand,
+product.merchant
+
+].map(text).join(" ");
+
+
+if(
+combined.includes("sidi")||
+combined.includes("cycling")||
+combined.includes("bicycle")||
+combined.includes("bike")||
+combined.includes("cleat")
+)
+return "cycling";
+
+
+if(
+combined.includes("shoe")||
+combined.includes("boot")||
+combined.includes("footwear")
+)
+return "footwear";
+
+
+if(
+combined.includes("outdoor")||
+combined.includes("camping")||
+combined.includes("hiking")||
+combined.includes("trail")
+)
+return "outdoor";
+
+
+if(
+combined.includes("sport")||
+combined.includes("fitness")||
+combined.includes("training")
+)
+return "fitness";
+
+
+return "other";
+
+}
+
+
+function determineKitchenSub(product){
+
+const combined=[
+
+product.category,
+product.subcategory,
+product.title,
+product.brand,
+product.merchant
+
+].map(text).join(" ");
+
+
+if(
+combined.includes("coffee")||
+combined.includes("espresso")||
+combined.includes("tea")||
+combined.includes("kettle")
+)
+return "coffee";
+
+
+if(
+combined.includes("air fryer")||
+combined.includes("microwave")||
+combined.includes("toaster")||
+combined.includes("griddle")||
+combined.includes("waffle")||
+combined.includes("rice maker")||
+combined.includes("slow cooker")||
+combined.includes("deep fryer")||
+combined.includes("panini")||
+combined.includes("appliance")
+)
+return "appliances";
+
+
+if(
+combined.includes("cookware")||
+combined.includes("pan ")||
+combined.includes("pot ")||
+combined.includes("grill")||
+combined.includes("skillet")
+)
+return "cookware";
+
+
+if(
+combined.includes("plate")||
+combined.includes("bowl")||
+combined.includes("dish")||
+combined.includes("dinnerware")||
+combined.includes("tableware")||
+combined.includes("mug")
+)
+return "dining";
+
+
+return "other";
+
+}
+
 
 function nicheTitle(niche){
 
- const titles={
- all:"All Products",
- sports:"Sports, Cycling & Outdoors",
- kitchen:"Kitchen & Dining",
- home:"Home & Garden",
- electronics:"Electronics & Technology",
- fashion:"Fashion & Accessories",
- beauty:"Beauty & Personal Care",
- health:"Health & Wellness",
- tools:"Tools & Home Improvement",
- travel:"Travel",
- software:"Software & Digital Products",
- other:"Other Products"
- };
+const titles={
 
- return titles[niche]||"Products";
+all:"All Products",
+
+sports:"Sports, Cycling & Outdoors",
+
+kitchen:"Kitchen & Dining",
+
+home:"Home & Garden",
+
+electronics:"Electronics & Technology",
+
+fashion:"Fashion & Accessories",
+
+beauty:"Beauty & Personal Care",
+
+health:"Health & Wellness",
+
+tools:"Tools & Home Improvement",
+
+travel:"Travel",
+
+software:"Software & Digital Products",
+
+other:"Other Products"
+
+};
+
+return titles[niche]||"Products";
+
 }
+
 
 async function loadAllProducts(){
 
- databaseProducts=[];
- let start=0;
+databaseProducts=[];
 
- try{
+let start=0;
 
-   while(true){
+try{
 
-     const end=start+BATCH_SIZE-1;
+while(true){
 
-     const endpoint=
-       `${SUPABASE_URL}/rest/v1/products`+
-       `?select=title,brand,merchant,category,subcategory,`+
-       `image_url,price,currency,affiliate_url,availability`+
-       `&is_active=eq.true&order=title.asc`;
+const end=start+BATCH_SIZE-1;
 
-     const response=await fetch(endpoint,{
-       headers:{
-         "apikey":SUPABASE_KEY,
-         "Range":`${start}-${end}`,
-         "Range-Unit":"items"
-       }
-     });
+const endpoint=
+`${SUPABASE_URL}/rest/v1/products`+
+`?select=title,brand,merchant,category,subcategory,`+
+`image_url,price,currency,affiliate_url,availability`+
+`&is_active=eq.true&order=title.asc`;
 
-     if(!response.ok){
-       throw new Error(`Unable to load products: ${response.status}`);
-     }
+const response=await fetch(endpoint,{
 
-     const batch=await response.json();
-
-     databaseProducts.push(...batch);
-
-     if(batch.length<BATCH_SIZE) break;
-
-     start+=BATCH_SIZE;
-   }
-
-   /* DEDUPLICATION HAPPENS HERE */
-
-   allProducts=removeDuplicates(databaseProducts);
-
-   applyFilters();
-
- }catch(error){
-
-   console.error(error);
-
-   productGrid.innerHTML=
-     `<div class="message">
-       Products could not be loaded right now.
-     </div>`;
-
-   productCount.textContent="Unable to load products";
- }
+headers:{
+"apikey":SUPABASE_KEY,
+"Range":`${start}-${end}`,
+"Range-Unit":"items"
 }
+
+});
+
+
+if(!response.ok){
+
+throw new Error(
+`Unable to load products: ${response.status}`
+);
+
+}
+
+
+const batch=await response.json();
+
+databaseProducts.push(...batch);
+
+
+if(batch.length<BATCH_SIZE){
+break;
+}
+
+start+=BATCH_SIZE;
+
+}
+
+
+/* Deduplicate storefront listings */
+
+allProducts=
+removeDuplicates(databaseProducts);
+
+applyFilters();
+
+
+}catch(error){
+
+console.error(error);
+
+productGrid.innerHTML=
+`<div class="message">
+Products could not be loaded right now.
+</div>`;
+
+productCount.textContent=
+"Unable to load products";
+
+}
+
+}
+
 
 function applyFilters(){
 
- const searchTerm=
-   searchInput.value.trim().toLowerCase();
+const searchTerm=
+searchInput.value.trim().toLowerCase();
 
- filteredProducts=allProducts.filter(product=>{
 
-   const nicheMatches=
-     selectedNiche==="all"||
-     determineNiche(product)===selectedNiche;
+filteredProducts=
+allProducts.filter(product=>{
 
-   const searchable=[
-     product.title,
-     product.brand,
-     product.merchant,
-     product.category,
-     product.subcategory
-   ].map(text).join(" ");
 
-   return nicheMatches &&
-     (!searchTerm||searchable.includes(searchTerm));
- });
+const niche=
+determineNiche(product);
 
- currentPage=1;
- renderProducts();
+
+const nicheMatches=
+selectedNiche==="all"||
+niche===selectedNiche;
+
+
+let subNicheMatches=true;
+
+
+if(selectedNiche==="sports"){
+
+subNicheMatches=
+selectedSubNiche==="all"||
+determineSubNiche(product)===selectedSubNiche;
+
 }
+
+
+if(selectedNiche==="kitchen"){
+
+subNicheMatches=
+selectedKitchenSub==="all"||
+determineKitchenSub(product)===selectedKitchenSub;
+
+}
+
+
+const searchable=[
+
+product.title,
+product.brand,
+product.merchant,
+product.category,
+product.subcategory
+
+].map(text).join(" ");
+
+
+const searchMatches=
+!searchTerm||
+searchable.includes(searchTerm);
+
+
+return
+nicheMatches&&
+subNicheMatches&&
+searchMatches;
+
+});
+
+
+currentPage=1;
+
+renderProducts();
+
+}
+
 
 function escapeHtml(value){
 
- return String(value||"")
-   .replaceAll("&","&amp;")
-   .replaceAll("<","&lt;")
-   .replaceAll(">","&gt;")
-   .replaceAll('"',"&quot;")
-   .replaceAll("'","&#039;");
+return String(value||"")
+
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
 }
+
 
 function renderProducts(){
 
- currentNicheTitle.textContent=nicheTitle(selectedNiche);
+currentNicheTitle.textContent=
+nicheTitle(selectedNiche);
 
- productCount.textContent=
-   `${filteredProducts.length.toLocaleString()} products available`;
 
- if(!filteredProducts.length){
+productCount.textContent=
+`${filteredProducts.length.toLocaleString()} products available`;
 
-   productGrid.innerHTML=
-     `<div class="message">No products were found in this niche.</div>`;
 
-   pageInfo.textContent="Page 0 of 0";
-   previousButton.disabled=true;
-   nextButton.disabled=true;
-   return;
- }
+if(!filteredProducts.length){
 
- const totalPages=
-   Math.ceil(filteredProducts.length/PRODUCTS_PER_PAGE);
+productGrid.innerHTML=
+`<div class="message">
+No products were found in this niche.
+</div>`;
 
- if(currentPage>totalPages) currentPage=totalPages;
+pageInfo.textContent="Page 0 of 0";
 
- const start=(currentPage-1)*PRODUCTS_PER_PAGE;
+previousButton.disabled=true;
+nextButton.disabled=true;
 
- const pageProducts=
-   filteredProducts.slice(start,start+PRODUCTS_PER_PAGE);
+return;
 
- productGrid.innerHTML=pageProducts.map(product=>{
-
-   const image=
-     product.image_url||
-     "https://placehold.co/400x400?text=Product";
-
-   const brand=
-     product.brand||
-     product.merchant||
-     "Marketplace";
-
-   let price="";
-
-   if(product.price!==null &&
-      product.price!==undefined){
-
-     try{
-       price=new Intl.NumberFormat("en-US",{
-         style:"currency",
-         currency:product.currency||"USD"
-       }).format(product.price);
-     }catch{
-       price=`${product.currency||"USD"} ${product.price}`;
-     }
-   }
-
-   return `
-   <article class="product-card">
-
-   <img
-     src="${escapeHtml(image)}"
-     alt="${escapeHtml(product.title||"Product")}"
-     loading="lazy"
-     onerror="this.src='https://placehold.co/400x400?text=Product'">
-
-   <div class="product-info">
-
-   <div class="brand">
-   ${escapeHtml(brand)}
-   </div>
-
-   <div class="product-title">
-   ${escapeHtml(product.title||"Product")}
-   </div>
-
-   <div class="price">
-   ${escapeHtml(price)}
-   </div>
-
-   <a
-     class="shop-button"
-     href="${escapeHtml(product.affiliate_url||"#")}"
-     target="_blank"
-     rel="nofollow sponsored noopener">
-     Shop Now
-   </a>
-
-   </div>
-   </article>`;
- }).join("");
-
- pageInfo.textContent=
-   `Page ${currentPage} of ${totalPages}`;
-
- previousButton.disabled=currentPage<=1;
- nextButton.disabled=currentPage>=totalPages;
 }
 
-document.querySelectorAll(".niche-button")
+
+const totalPages=
+Math.ceil(
+filteredProducts.length/
+PRODUCTS_PER_PAGE
+);
+
+
+if(currentPage>totalPages){
+currentPage=totalPages;
+}
+
+
+const start=
+(currentPage-1)*
+PRODUCTS_PER_PAGE;
+
+
+const pageProducts=
+filteredProducts.slice(
+start,
+start+PRODUCTS_PER_PAGE
+);
+
+
+productGrid.innerHTML=
+pageProducts.map(product=>{
+
+
+const image=
+product.image_url||
+"https://placehold.co/400x400?text=Product";
+
+
+const brand=
+product.brand||
+product.merchant||
+"Marketplace";
+
+
+let price="";
+
+
+if(
+product.price!==null&&
+product.price!==undefined
+){
+
+try{
+
+price=
+new Intl.NumberFormat(
+"en-US",
+{
+style:"currency",
+currency:product.currency||"USD"
+}
+).format(product.price);
+
+}catch{
+
+price=
+`${product.currency||"USD"} ${product.price}`;
+
+}
+
+}
+
+
+return `
+
+<article class="product-card">
+
+<img
+src="${escapeHtml(image)}"
+alt="${escapeHtml(product.title||"Product")}"
+loading="lazy"
+onerror="this.src='https://placehold.co/400x400?text=Product'"
+>
+
+<div class="product-info">
+
+<div class="brand">
+${escapeHtml(brand)}
+</div>
+
+<div class="product-title">
+${escapeHtml(product.title||"Product")}
+</div>
+
+<div class="price">
+${escapeHtml(price)}
+</div>
+
+<a
+class="shop-button"
+href="${escapeHtml(product.affiliate_url||"#")}"
+target="_blank"
+rel="nofollow sponsored noopener"
+>
+Shop Now
+</a>
+
+</div>
+
+</article>
+
+`;
+
+}).join("");
+
+
+pageInfo.textContent=
+`Page ${currentPage} of ${totalPages}`;
+
+
+previousButton.disabled=
+currentPage<=1;
+
+nextButton.disabled=
+currentPage>=totalPages;
+
+}
+
+
+/* MAIN NICHE BUTTONS */
+
+document
+.querySelectorAll(".niche-button[data-niche]")
 .forEach(button=>{
 
- button.addEventListener("click",()=>{
+button.addEventListener("click",()=>{
 
-   document.querySelectorAll(".niche-button")
-   .forEach(item=>item.classList.remove("active"));
 
-   button.classList.add("active");
+document
+.querySelectorAll(".niche-button[data-niche]")
+.forEach(item=>
+item.classList.remove("active")
+);
 
-   selectedNiche=button.dataset.niche;
 
-   applyFilters();
+button.classList.add("active");
 
-   document.getElementById("products")
-   .scrollIntoView({behavior:"smooth"});
- });
+
+selectedNiche=
+button.dataset.niche;
+
+
+selectedSubNiche="all";
+selectedKitchenSub="all";
+
+
+document
+.querySelectorAll(".sub-niche-button")
+.forEach(item=>
+item.classList.remove("active")
+);
+
+
+document
+.querySelectorAll(".kitchen-sub-button")
+.forEach(item=>
+item.classList.remove("active")
+);
+
+
+const sportsSection=
+document.getElementById(
+"sportsSubSection"
+);
+
+
+const kitchenSection=
+document.getElementById(
+"kitchenSubSection"
+);
+
+
+sportsSection.style.display=
+selectedNiche==="sports"
+?"block"
+:"none";
+
+
+kitchenSection.style.display=
+selectedNiche==="kitchen"
+?"block"
+:"none";
+
+
+if(selectedNiche==="sports"){
+
+document
+.querySelector(
+'.sub-niche-button[data-subniche="all"]'
+)
+.classList.add("active");
+
+}
+
+
+if(selectedNiche==="kitchen"){
+
+document
+.querySelector(
+'.kitchen-sub-button[data-kitchensub="all"]'
+)
+.classList.add("active");
+
+}
+
+
+applyFilters();
+
+
+document
+.getElementById("products")
+.scrollIntoView({
+behavior:"smooth"
 });
 
-searchInput.addEventListener("input",applyFilters);
-
-previousButton.addEventListener("click",()=>{
-
- if(currentPage>1){
-   currentPage--;
-   renderProducts();
-
-   document.getElementById("products")
-   .scrollIntoView({behavior:"smooth"});
- }
 });
 
-nextButton.addEventListener("click",()=>{
-
- const totalPages=
-   Math.ceil(filteredProducts.length/PRODUCTS_PER_PAGE);
-
- if(currentPage<totalPages){
-   currentPage++;
-   renderProducts();
-
-   document.getElementById("products")
-   .scrollIntoView({behavior:"smooth"});
- }
 });
+
+
+/* SPORTS SUB-NICHES */
+
+document
+.querySelectorAll(".sub-niche-button")
+.forEach(button=>{
+
+button.addEventListener("click",()=>{
+
+document
+.querySelectorAll(".sub-niche-button")
+.forEach(item=>
+item.classList.remove("active")
+);
+
+button.classList.add("active");
+
+selectedSubNiche=
+button.dataset.subniche;
+
+applyFilters();
+
+});
+
+});
+
+
+/* KITCHEN SUB-NICHES */
+
+document
+.querySelectorAll(".kitchen-sub-button")
+.forEach(button=>{
+
+button.addEventListener("click",()=>{
+
+document
+.querySelectorAll(".kitchen-sub-button")
+.forEach(item=>
+item.classList.remove("active")
+);
+
+button.classList.add("active");
+
+selectedKitchenSub=
+button.dataset.kitchensub;
+
+applyFilters();
+
+});
+
+});
+
+
+/* SEARCH */
+
+searchInput.addEventListener(
+"input",
+applyFilters
+);
+
+
+/* PAGINATION */
+
+previousButton.addEventListener(
+"click",
+()=>{
+
+if(currentPage>1){
+
+currentPage--;
+
+renderProducts();
+
+document
+.getElementById("products")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+}
+);
+
+
+nextButton.addEventListener(
+"click",
+()=>{
+
+const totalPages=
+Math.ceil(
+filteredProducts.length/
+PRODUCTS_PER_PAGE
+);
+
+
+if(currentPage<totalPages){
+
+currentPage++;
+
+renderProducts();
+
+document
+.getElementById("products")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+}
+);
+
+
+/* START */
 
 loadAllProducts();
 

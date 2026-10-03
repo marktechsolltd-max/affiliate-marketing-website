@@ -686,12 +686,49 @@
   }
 
 
+  
+    function removeDuplicateProducts(products) {
+
+    const seen = new Set();
+
+    return products.filter(product => {
+
+      const title = text(product.title)
+        .replace(/\s+/g, " ")
+        .trim();
+
+      const brand = text(
+        product.brand || product.merchant
+      )
+        .replace(/\s+/g, " ")
+        .replace(" migration", "")
+        .trim();
+
+      const price =
+        product.price !== null &&
+        product.price !== undefined
+          ? String(product.price)
+          : "";
+
+      const key =
+        `${brand}|${title}|${price}`;
+
+      if (seen.has(key)) {
+        return false;
+      }
+
+      seen.add(key);
+
+      return true;
+    });
+  }
   function applyFilters() {
 
     const searchTerm =
       searchInput.value.trim().toLowerCase();
 
-    filteredProducts = allProducts.filter(product => {
+    filteredProducts = removeDuplicateProducts(
+  allProducts.filter(product => {
 
       const niche = determineNiche(product);
 
@@ -714,7 +751,7 @@
         searchableText.includes(searchTerm);
 
       return nicheMatches && searchMatches;
-    });
+    }));
 
     currentPage = 1;
 

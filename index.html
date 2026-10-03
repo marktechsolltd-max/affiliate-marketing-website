@@ -233,7 +233,9 @@ function removeDuplicates(products){
        ? ""
        : Number(product.price).toFixed(2);
 
-   const key=`${brand}|${title}|${price}`;
+   const key = brand.includes("sidi")
+  ? `sidi|${title}`
+  : `${brand}|${title}|${price}`;
 
    if(!map.has(key)){
      map.set(key,product);

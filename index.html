@@ -13,9 +13,9 @@
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f6f8;
-      color: #222;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fa;
+      color: #1f2937;
     }
 
     header {
@@ -24,48 +24,63 @@
       padding: 18px 5%;
     }
 
-    .header-inner {
+    .topbar {
       max-width: 1400px;
       margin: auto;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      flex-wrap: wrap;
     }
 
-    h1 {
-      margin: 0 0 15px;
-      font-size: 28px;
-    }
-
-    .search-box {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
     }
 
     nav {
-      margin-top: 15px;
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
     }
 
     nav a {
       color: white;
       text-decoration: none;
-      margin-right: 20px;
+      font-weight: 600;
+    }
+
+    .search-wrap {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    #searchInput {
+      width: 100%;
+      padding: 12px 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
     }
 
     .hero {
       background: white;
       text-align: center;
-      padding: 55px 20px;
+      padding: 55px 20px 40px;
+      border-bottom: 1px solid #e5e7eb;
     }
 
-    .hero h2 {
-      font-size: 38px;
+    .hero h1 {
       margin: 0 0 12px;
+      font-size: clamp(32px, 5vw, 52px);
     }
 
     .hero p {
-      color: #666;
+      max-width: 750px;
+      margin: auto;
       font-size: 18px;
+      color: #6b7280;
+      line-height: 1.6;
     }
 
     main {
@@ -75,95 +90,217 @@
     }
 
     .section-title {
-      margin-bottom: 20px;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 30px;
     }
 
-    .status {
-      margin-bottom: 20px;
-      color: #555;
+    .section-subtitle {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 30px;
+    }
+
+    .niches {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+
+    .niche-button {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px 12px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 700;
+      transition: 0.2s;
+      min-height: 82px;
+    }
+
+    .niche-button:hover,
+    .niche-button.active {
+      background: #111827;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .niche-icon {
+      display: block;
+      font-size: 26px;
+      margin-bottom: 7px;
+    }
+
+    .product-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    #productCount {
+      color: #6b7280;
+      font-weight: 600;
     }
 
     .products {
       display: grid;
-      grid-template-columns:
-        repeat(auto-fill, minmax(240px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 22px;
     }
 
     .product-card {
       background: white;
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
-      box-shadow: 0 2px 10px rgba(0,0,0,.08);
+      border: 1px solid #e5e7eb;
       display: flex;
       flex-direction: column;
+      min-height: 420px;
     }
 
-    .product-image {
+    .product-card img {
       width: 100%;
-      height: 230px;
+      height: 220px;
       object-fit: contain;
       background: white;
-      padding: 15px;
+      padding: 12px;
     }
 
-    .product-content {
-      padding: 18px;
+    .product-info {
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      flex-grow: 1;
+      flex: 1;
     }
 
     .brand {
       color: #6b7280;
       font-size: 13px;
-      margin-bottom: 7px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      text-transform: uppercase;
     }
 
     .product-title {
-      font-size: 17px;
-      font-weight: bold;
+      font-size: 16px;
+      font-weight: 700;
       line-height: 1.4;
       margin-bottom: 12px;
     }
 
     .price {
-      font-size: 22px;
-      font-weight: bold;
+      font-size: 20px;
+      font-weight: 800;
       margin-top: auto;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
     }
 
     .shop-button {
       display: block;
-      text-align: center;
       background: #111827;
       color: white;
-      padding: 12px;
-      border-radius: 7px;
       text-decoration: none;
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
       font-weight: bold;
     }
 
     .shop-button:hover {
-      opacity: .9;
+      opacity: 0.88;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      margin: 35px 0;
+    }
+
+    .page-button {
+      border: none;
+      background: #111827;
+      color: white;
+      padding: 11px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .page-button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    #pageInfo {
+      font-weight: bold;
+    }
+
+    .message {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px 20px;
+      color: #6b7280;
+      font-size: 18px;
     }
 
     footer {
-      margin-top: 50px;
       background: #111827;
-      color: white;
+      color: #d1d5db;
+      padding: 35px 5%;
       text-align: center;
-      padding: 30px 20px;
+      line-height: 1.7;
+      margin-top: 50px;
     }
 
     footer p {
-      margin: 7px;
+      max-width: 900px;
+      margin: 8px auto;
     }
 
-    .disclosure {
-      color: #d1d5db;
-      font-size: 13px;
+    @media (max-width: 600px) {
+      .topbar {
+        display: block;
+      }
+
+      .logo {
+        margin-bottom: 15px;
+      }
+
+      nav {
+        margin-bottom: 15px;
+      }
+
+      .products {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .product-card {
+        min-height: 350px;
+      }
+
+      .product-card img {
+        height: 160px;
+      }
+
+      .product-info {
+        padding: 11px;
+      }
+
+      .product-title {
+        font-size: 14px;
+      }
+
+      .price {
+        font-size: 17px;
+      }
     }
   </style>
 </head>
@@ -171,286 +308,642 @@
 <body>
 
 <header>
-  <div class="header-inner">
-
-    <h1>Affiliate Marketplace</h1>
-
-    <input
-      id="search"
-      class="search-box"
-      type="search"
-      placeholder="Search products..."
-    >
+  <div class="topbar">
+    <div class="logo">Affiliate Marketplace</div>
 
     <nav>
       <a href="#">Home</a>
-      <a href="#products">Shop</a>
+      <a href="#niches">Shop by Niche</a>
       <a href="#products">Products</a>
       <a href="#about">About</a>
     </nav>
 
+    <div class="search-wrap">
+      <input
+        id="searchInput"
+        type="search"
+        placeholder="Search products, brands, categories..."
+      >
+    </div>
   </div>
 </header>
 
 <section class="hero">
-
-  <h2>One Marketplace. Thousands of Products.</h2>
-
+  <h1>One Marketplace. Thousands of Products.</h1>
   <p>
-    Discover products from brands and affiliate partners
-    in one convenient marketplace.
+    Browse products from multiple brands and affiliate partners,
+    organized into easy-to-shop niches.
   </p>
-
 </section>
 
 <main>
 
-  <h2 class="section-title">
-    Shop Products
-  </h2>
+  <section id="niches">
+    <h2 class="section-title">Shop by Niche</h2>
+    <p class="section-subtitle">
+      Choose a niche to find products that interest you.
+    </p>
 
-  <div id="status" class="status">
-    Loading products...
-  </div>
+    <div class="niches">
+      <button class="niche-button active" data-niche="all">
+        <span class="niche-icon">🛍️</span>
+        All Products
+      </button>
 
-  <div
-    id="products"
-    class="products">
-  </div>
+      <button class="niche-button" data-niche="sports">
+        <span class="niche-icon">🚴</span>
+        Sports, Cycling & Outdoors
+      </button>
+
+      <button class="niche-button" data-niche="kitchen">
+        <span class="niche-icon">🍳</span>
+        Kitchen & Dining
+      </button>
+
+      <button class="niche-button" data-niche="home">
+        <span class="niche-icon">🏠</span>
+        Home & Garden
+      </button>
+
+      <button class="niche-button" data-niche="electronics">
+        <span class="niche-icon">💻</span>
+        Electronics & Technology
+      </button>
+
+      <button class="niche-button" data-niche="fashion">
+        <span class="niche-icon">👕</span>
+        Fashion & Accessories
+      </button>
+
+      <button class="niche-button" data-niche="beauty">
+        <span class="niche-icon">✨</span>
+        Beauty & Personal Care
+      </button>
+
+      <button class="niche-button" data-niche="health">
+        <span class="niche-icon">❤️</span>
+        Health & Wellness
+      </button>
+
+      <button class="niche-button" data-niche="tools">
+        <span class="niche-icon">🛠️</span>
+        Tools & Home Improvement
+      </button>
+
+      <button class="niche-button" data-niche="travel">
+        <span class="niche-icon">✈️</span>
+        Travel
+      </button>
+
+      <button class="niche-button" data-niche="software">
+        <span class="niche-icon">📱</span>
+        Software & Digital Products
+      </button>
+
+      <button class="niche-button" data-niche="other">
+        <span class="niche-icon">📦</span>
+        Other Products
+      </button>
+    </div>
+  </section>
+
+  <section id="products">
+
+    <div class="product-header">
+      <div>
+        <h2 id="currentNicheTitle">All Products</h2>
+        <div id="productCount">Loading products...</div>
+      </div>
+    </div>
+
+    <div id="productGrid" class="products">
+      <div class="message">Loading marketplace products...</div>
+    </div>
+
+    <div class="pagination">
+      <button id="previousButton" class="page-button">
+        Previous
+      </button>
+
+      <span id="pageInfo">Page 1</span>
+
+      <button id="nextButton" class="page-button">
+        Next
+      </button>
+    </div>
+
+  </section>
 
 </main>
 
 <footer id="about">
+  <p><strong>Affiliate Marketplace</strong></p>
 
   <p>
-    <strong>Affiliate Marketplace</strong>
+    We may earn a commission when you purchase through qualifying
+    affiliate links on this website, at no additional cost to you.
   </p>
 
-  <p class="disclosure">
-    Affiliate Disclosure: We may earn a commission
-    when you purchase through links on this website,
-    at no additional cost to you.
+  <p>
+    Product prices, availability and information may change.
+    Please confirm final details on the merchant's website before purchasing.
   </p>
-
 </footer>
 
-
 <script>
+  const SUPABASE_URL =
+    "https://mjetwdjwucymmmrgzwcr.supabase.co";
 
-const SUPABASE_URL =
-  "https://mjetwdjwucymmmrgzwcr.supabase.co";
+  const SUPABASE_KEY =
+    "sb_publishable_agC9QXDTsSnQ2wooArot0Q_meElOOkY";
 
-const SUPABASE_KEY =
-  "sb_publishable_agC9QXDTsSnQ2wooArot0Q_meElOOkY";
+  const BATCH_SIZE = 1000;
+  const PRODUCTS_PER_PAGE = 48;
 
-let allProducts = [];
+  let allProducts = [];
+  let filteredProducts = [];
+  let selectedNiche = "all";
+  let currentPage = 1;
+
+  const productGrid = document.getElementById("productGrid");
+  const productCount = document.getElementById("productCount");
+  const searchInput = document.getElementById("searchInput");
+  const currentNicheTitle =
+    document.getElementById("currentNicheTitle");
+
+  const previousButton =
+    document.getElementById("previousButton");
+
+  const nextButton =
+    document.getElementById("nextButton");
+
+  const pageInfo =
+    document.getElementById("pageInfo");
 
 
-function escapeHTML(value) {
-
-  if (value === null || value === undefined) {
-    return "";
+  function text(value) {
+    return (value || "").toString().toLowerCase();
   }
 
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
 
+  function determineNiche(product) {
 
-function renderProducts(products) {
+    const combined = [
+      product.category,
+      product.subcategory,
+      product.brand,
+      product.merchant,
+      product.title
+    ]
+      .map(text)
+      .join(" ");
 
-  const container =
-    document.getElementById("products");
-
-  const status =
-    document.getElementById("status");
-
-  container.innerHTML = "";
-
-  if (!products.length) {
-
-    status.textContent =
-      "No products found.";
-
-    return;
-  }
-
-  status.textContent =
-    `${products.length} products available`;
-
-  products.forEach(product => {
-
-    const card =
-      document.createElement("article");
-
-    card.className =
-      "product-card";
-
-    const image =
-      product.image_url
-        ? escapeHTML(product.image_url)
-        : "";
-
-    const title =
-      escapeHTML(product.title);
-
-    const brand =
-      escapeHTML(
-        product.brand ||
-        product.merchant ||
-        "Product"
-      );
-
-    const price =
-      product.price !== null &&
-      product.price !== undefined
-        ? `$${Number(product.price).toFixed(2)}`
-        : "See price";
-
-    const affiliate =
-      escapeHTML(product.affiliate_url);
-
-    card.innerHTML = `
-      ${
-        image
-          ? `<img
-               class="product-image"
-               src="${image}"
-               alt="${title}"
-               loading="lazy"
-             >`
-          : ""
-      }
-
-      <div class="product-content">
-
-        <div class="brand">
-          ${brand}
-        </div>
-
-        <div class="product-title">
-          ${title}
-        </div>
-
-        <div class="price">
-          ${price}
-        </div>
-
-        <a
-          class="shop-button"
-          href="${affiliate}"
-          target="_blank"
-          rel="nofollow sponsored noopener">
-          Shop Now
-        </a>
-
-      </div>
-    `;
-
-    container.appendChild(card);
-  });
-}
-
-
-async function loadProducts() {
-
-  const status =
-    document.getElementById("status");
-
-  try {
-
-    const endpoint =
-      `${SUPABASE_URL}/rest/v1/products` +
-      `?select=title,brand,merchant,image_url,price,currency,affiliate_url` +
-      `&is_active=eq.true` +
-      `&order=title.asc`;
-
-    const response =
-      await fetch(endpoint, {
-        headers: {
-          "apikey": SUPABASE_KEY
-        }
-      });
-
-    if (!response.ok) {
-
-      const message =
-        await response.text();
-
-      throw new Error(
-        `${response.status}: ${message}`
-      );
+    if (
+      combined.includes("sidi") ||
+      combined.includes("cycling") ||
+      combined.includes("bicycle") ||
+      combined.includes("bike") ||
+      combined.includes("sport") ||
+      combined.includes("outdoor") ||
+      combined.includes("shoe")
+    ) {
+      return "sports";
     }
 
-    allProducts =
-      await response.json();
+    if (
+      combined.includes("chefman") ||
+      combined.includes("dowan") ||
+      combined.includes("kitchen") ||
+      combined.includes("cook") ||
+      combined.includes("dining") ||
+      combined.includes("tableware") ||
+      combined.includes("drinkware") ||
+      combined.includes("appliance")
+    ) {
+      return "kitchen";
+    }
 
-    renderProducts(
-      allProducts
-    );
+    if (
+      combined.includes("home") ||
+      combined.includes("garden") ||
+      combined.includes("furniture") ||
+      combined.includes("decor") ||
+      combined.includes("bedding")
+    ) {
+      return "home";
+    }
 
-  } catch (error) {
+    if (
+      combined.includes("electronic") ||
+      combined.includes("computer") ||
+      combined.includes("phone") ||
+      combined.includes("technology") ||
+      combined.includes("audio") ||
+      combined.includes("camera")
+    ) {
+      return "electronics";
+    }
 
-    console.error(error);
+    if (
+      combined.includes("fashion") ||
+      combined.includes("clothing") ||
+      combined.includes("apparel") ||
+      combined.includes("jewelry") ||
+      combined.includes("watch") ||
+      combined.includes("handbag")
+    ) {
+      return "fashion";
+    }
 
-    status.textContent =
-      "Products could not be loaded.";
+    if (
+      combined.includes("beauty") ||
+      combined.includes("cosmetic") ||
+      combined.includes("skin care") ||
+      combined.includes("skincare") ||
+      combined.includes("hair care")
+    ) {
+      return "beauty";
+    }
 
+    if (
+      combined.includes("health") ||
+      combined.includes("wellness") ||
+      combined.includes("fitness")
+    ) {
+      return "health";
+    }
+
+    if (
+      combined.includes("tool") ||
+      combined.includes("hardware") ||
+      combined.includes("home improvement")
+    ) {
+      return "tools";
+    }
+
+    if (
+      combined.includes("travel") ||
+      combined.includes("luggage") ||
+      combined.includes("hotel") ||
+      combined.includes("flight")
+    ) {
+      return "travel";
+    }
+
+    if (
+      combined.includes("software") ||
+      combined.includes("digital") ||
+      combined.includes("download") ||
+      combined.includes("app ")
+    ) {
+      return "software";
+    }
+
+    return "other";
   }
-}
 
 
-document
-  .getElementById("search")
-  .addEventListener(
-    "input",
-    event => {
+  function nicheTitle(niche) {
 
-      const query =
-        event.target.value
-          .trim()
-          .toLowerCase();
+    const titles = {
+      all: "All Products",
+      sports: "Sports, Cycling & Outdoors",
+      kitchen: "Kitchen & Dining",
+      home: "Home & Garden",
+      electronics: "Electronics & Technology",
+      fashion: "Fashion & Accessories",
+      beauty: "Beauty & Personal Care",
+      health: "Health & Wellness",
+      tools: "Tools & Home Improvement",
+      travel: "Travel",
+      software: "Software & Digital Products",
+      other: "Other Products"
+    };
 
-      if (!query) {
+    return titles[niche] || "Products";
+  }
 
-        renderProducts(
-          allProducts
-        );
 
-        return;
-      }
+  async function loadAllProducts() {
 
-      const filtered =
-        allProducts.filter(product => {
+    allProducts = [];
 
-          const searchable =
-            [
-              product.title,
-              product.brand,
-              product.merchant
-            ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase();
+    let start = 0;
 
-          return searchable.includes(
-            query
-          );
+    try {
+
+      while (true) {
+
+        const end = start + BATCH_SIZE - 1;
+
+        const endpoint =
+          `${SUPABASE_URL}/rest/v1/products` +
+          `?select=title,brand,merchant,category,subcategory,` +
+          `image_url,price,currency,affiliate_url,availability` +
+          `&is_active=eq.true` +
+          `&order=title.asc`;
+
+        const response = await fetch(endpoint, {
+          headers: {
+            "apikey": SUPABASE_KEY,
+            "Range": `${start}-${end}`,
+            "Range-Unit": "items"
+          }
         });
 
-      renderProducts(
-        filtered
+        if (!response.ok) {
+          throw new Error(
+            `Unable to load products: ${response.status}`
+          );
+        }
+
+        const batch = await response.json();
+
+        allProducts.push(...batch);
+
+        if (batch.length < BATCH_SIZE) {
+          break;
+        }
+
+        start += BATCH_SIZE;
+      }
+
+      applyFilters();
+
+    } catch (error) {
+
+      console.error(error);
+
+      productGrid.innerHTML =
+        `<div class="message">
+          Products could not be loaded right now.
+          Please try again later.
+        </div>`;
+
+      productCount.textContent =
+        "Unable to load products";
+    }
+  }
+
+
+  function applyFilters() {
+
+    const searchTerm =
+      searchInput.value.trim().toLowerCase();
+
+    filteredProducts = allProducts.filter(product => {
+
+      const niche = determineNiche(product);
+
+      const nicheMatches =
+        selectedNiche === "all" ||
+        niche === selectedNiche;
+
+      const searchableText = [
+        product.title,
+        product.brand,
+        product.merchant,
+        product.category,
+        product.subcategory
+      ]
+        .map(text)
+        .join(" ");
+
+      const searchMatches =
+        !searchTerm ||
+        searchableText.includes(searchTerm);
+
+      return nicheMatches && searchMatches;
+    });
+
+    currentPage = 1;
+
+    renderProducts();
+  }
+
+
+  function renderProducts() {
+
+    currentNicheTitle.textContent =
+      nicheTitle(selectedNiche);
+
+    productCount.textContent =
+      `${filteredProducts.length.toLocaleString()} products available`;
+
+    if (filteredProducts.length === 0) {
+
+      productGrid.innerHTML =
+        `<div class="message">
+          No products were found in this niche.
+        </div>`;
+
+      pageInfo.textContent = "Page 0 of 0";
+      previousButton.disabled = true;
+      nextButton.disabled = true;
+
+      return;
+    }
+
+    const totalPages =
+      Math.ceil(
+        filteredProducts.length /
+        PRODUCTS_PER_PAGE
       );
+
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+
+    const start =
+      (currentPage - 1) * PRODUCTS_PER_PAGE;
+
+    const pageProducts =
+      filteredProducts.slice(
+        start,
+        start + PRODUCTS_PER_PAGE
+      );
+
+    productGrid.innerHTML =
+      pageProducts.map(product => {
+
+        const image =
+          product.image_url ||
+          "https://placehold.co/400x400?text=Product";
+
+        const brand =
+          product.brand ||
+          product.merchant ||
+          "Marketplace";
+
+        const currency =
+          product.currency || "USD";
+
+        let price = "";
+
+        if (
+          product.price !== null &&
+          product.price !== undefined
+        ) {
+
+          try {
+
+            price = new Intl.NumberFormat(
+              "en-US",
+              {
+                style: "currency",
+                currency: currency
+              }
+            ).format(product.price);
+
+          } catch {
+
+            price =
+              `${currency} ${product.price}`;
+          }
+        }
+
+        return `
+          <article class="product-card">
+
+            <img
+              src="${escapeHtml(image)}"
+              alt="${escapeHtml(product.title || "Product")}"
+              loading="lazy"
+              onerror="this.src='https://placehold.co/400x400?text=Product'"
+            >
+
+            <div class="product-info">
+
+              <div class="brand">
+                ${escapeHtml(brand)}
+              </div>
+
+              <div class="product-title">
+                ${escapeHtml(product.title || "Product")}
+              </div>
+
+              <div class="price">
+                ${escapeHtml(price)}
+              </div>
+
+              <a
+                class="shop-button"
+                href="${escapeHtml(product.affiliate_url || "#")}"
+                target="_blank"
+                rel="nofollow sponsored noopener"
+              >
+                Shop Now
+              </a>
+
+            </div>
+          </article>
+        `;
+
+      }).join("");
+
+    pageInfo.textContent =
+      `Page ${currentPage} of ${totalPages}`;
+
+    previousButton.disabled =
+      currentPage <= 1;
+
+    nextButton.disabled =
+      currentPage >= totalPages;
+  }
+
+
+  function escapeHtml(value) {
+
+    return String(value || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+
+  document
+    .querySelectorAll(".niche-button")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        document
+          .querySelectorAll(".niche-button")
+          .forEach(item =>
+            item.classList.remove("active")
+          );
+
+        button.classList.add("active");
+
+        selectedNiche =
+          button.dataset.niche;
+
+        applyFilters();
+
+        document
+          .getElementById("products")
+          .scrollIntoView({
+            behavior: "smooth"
+          });
+      });
+    });
+
+
+  searchInput.addEventListener(
+    "input",
+    applyFilters
+  );
+
+
+  previousButton.addEventListener(
+    "click",
+    () => {
+
+      if (currentPage > 1) {
+
+        currentPage--;
+
+        renderProducts();
+
+        document
+          .getElementById("products")
+          .scrollIntoView({
+            behavior: "smooth"
+          });
+      }
     }
   );
 
 
-loadProducts();
+  nextButton.addEventListener(
+    "click",
+    () => {
 
+      const totalPages =
+        Math.ceil(
+          filteredProducts.length /
+          PRODUCTS_PER_PAGE
+        );
+
+      if (currentPage < totalPages) {
+
+        currentPage++;
+
+        renderProducts();
+
+        document
+          .getElementById("products")
+          .scrollIntoView({
+            behavior: "smooth"
+          });
+      }
+    }
+  );
+
+
+  loadAllProducts();
 </script>
 
 </body>
